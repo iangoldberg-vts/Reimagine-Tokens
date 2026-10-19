@@ -266,7 +266,6 @@ function App() {
             </div>
             <span className="font-heading text-sm font-semibold">Design System</span>
           </div>
-          <span className="text-sm text-muted-foreground">Foundation</span>
         </div>
       </header>
 
