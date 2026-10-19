@@ -106,13 +106,8 @@ const FUNCTIONAL_TOKENS: ColorToken[] = [
 ]
 
 const RADIUS_SCALE = [
-  { label: 'sm', className: 'rounded-sm', px: '4.8px' },
-  { label: 'md', className: 'rounded-md', px: '6.4px' },
   { label: 'lg', className: 'rounded-lg', px: '8px' },
-  { label: 'xl', className: 'rounded-xl', px: '11.2px' },
   { label: '2xl', className: 'rounded-2xl', px: '14.4px' },
-  { label: '3xl', className: 'rounded-3xl', px: '17.6px' },
-  { label: '4xl', className: 'rounded-4xl', px: '20.8px' },
   { label: 'full', className: 'rounded-full', px: 'pill' },
 ]
 
