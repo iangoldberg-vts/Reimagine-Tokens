@@ -319,11 +319,7 @@ function App() {
             </p>
           </div>
 
-          <Section
-            id="grid"
-            title="Grid"
-            description="Desktop: 12 columns · 76px margin · 24px gutter. Mobile: 4 columns · 16px margin · 16px gutter."
-          >
+          <Section id="grid" title="Grid">
             <Card>
               <CardContent className="px-4 py-6 sm:px-[76px]">
                 <div className="grid grid-cols-4 gap-4 sm:grid-cols-12 sm:gap-6">
@@ -338,12 +334,12 @@ function App() {
                     </div>
                   ))}
                 </div>
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Resize the window — below <code>sm</code>: 4 columns · 16px margin · 16px gutter. At{' '}
-                  <code>sm</code> and above: 12 columns · 76px margin · 24px gutter.
-                </p>
               </CardContent>
             </Card>
+            <p className="text-xs text-muted-foreground">
+              Resize the window. Below <code>sm</code>: 4 columns · 16px margin · 16px gutter. At{' '}
+              <code>sm</code> and above: 12 columns · 76px margin · 24px gutter.
+            </p>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-[1fr_auto]">
               <GridOverlayMock
