@@ -146,7 +146,6 @@ const ICONS = [
 ]
 
 const IMAGE_RATIOS = [
-  { ratio: 16 / 9, label: '16:9' },
   { ratio: 1, label: '1:1' },
   { ratio: 4 / 3, label: '4:3' },
 ]
