@@ -380,7 +380,7 @@ function App() {
           <Section
             id="surfaces"
             title="Surfaces"
-            description="Background containers are flat — no elevation, no border unless needed for separation."
+            description="Background containers are flat. No elevation or borders unless needed for separation."
           >
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div className="flex h-32 items-center justify-center rounded-lg bg-background text-sm text-foreground ring-1 ring-border">
