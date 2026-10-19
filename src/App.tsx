@@ -146,8 +146,8 @@ const ICONS = [
 ]
 
 const IMAGE_RATIOS = [
-  { ratio: 1, label: '1:1' },
-  { ratio: 4 / 3, label: '4:3' },
+  { ratio: 1, label: 'Circle (Avatar)', shape: 'rounded-full' },
+  { ratio: 4 / 3, label: '4:3', shape: 'rounded-lg' },
 ]
 
 const AI_PRINCIPLES = [
@@ -571,7 +571,7 @@ function App() {
               {IMAGE_RATIOS.map((item) => (
                 <div key={item.label} className="flex flex-col gap-2">
                   <AspectRatio ratio={item.ratio}>
-                    <div className="flex size-full items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <div className={`flex size-full items-center justify-center bg-muted text-muted-foreground ${item.shape}`}>
                       <ImageIcon />
                     </div>
                   </AspectRatio>
