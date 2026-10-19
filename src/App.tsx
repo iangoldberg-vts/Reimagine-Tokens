@@ -283,8 +283,9 @@ function App() {
           <div>
             <h1 className="text-3xl font-semibold">Foundation</h1>
             <p className="mt-2 max-w-2xl text-muted-foreground">
-              The core building blocks of the VTS design system — grid, spacing, surfaces, color, and
-              type — applied consistently across every product surface.
+              The core building blocks of the VTS design system,{' '}
+              <strong className="font-semibold text-foreground">grid, spacing, surfaces, color, and type</strong>,
+              applied consistently across every product surface.
             </p>
           </div>
 
