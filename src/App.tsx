@@ -113,13 +113,13 @@ const RADIUS_SCALE = [
 ]
 
 const TYPE_SCALE = [
-  { label: 'Display', className: 'text-4xl font-semibold' },
-  { label: 'H1', className: 'text-3xl font-semibold' },
-  { label: 'H2', className: 'text-2xl font-semibold' },
-  { label: 'H3', className: 'text-xl font-semibold' },
-  { label: 'Body', className: 'text-base font-normal' },
-  { label: 'Small', className: 'text-sm font-normal' },
-  { label: 'Caption', className: 'text-xs font-normal text-muted-foreground' },
+  { label: 'Display', size: '36px', className: 'text-4xl font-semibold' },
+  { label: 'H1', size: '30px', className: 'text-3xl font-semibold' },
+  { label: 'H2', size: '24px', className: 'text-2xl font-semibold' },
+  { label: 'H3', size: '20px', className: 'text-xl font-semibold' },
+  { label: 'Body', size: '16px', className: 'text-base font-normal' },
+  { label: 'Small', size: '14px', className: 'text-sm font-normal' },
+  { label: 'Caption', size: '12px', className: 'text-xs font-normal text-muted-foreground' },
 ]
 
 const ICONS = [
@@ -538,7 +538,9 @@ function App() {
                     key={t.label}
                     className="flex items-baseline gap-4 border-b border-border pb-4 last:border-0 last:pb-0"
                   >
-                    <span className="w-20 shrink-0 text-xs text-muted-foreground">{t.label}</span>
+                    <span className="w-32 shrink-0 text-xs text-muted-foreground">
+                      {t.label} ({t.size})
+                    </span>
                     <span className={t.className}>Built for how modern teams work</span>
                   </div>
                 ))}
