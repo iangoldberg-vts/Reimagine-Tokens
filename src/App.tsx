@@ -425,7 +425,7 @@ function App() {
                       ring-1 ring-foreground/10
                     </div>
                     <div>
-                      <CardTitle className="text-base">Flat</CardTitle>
+                      <CardTitle className="text-base">Base</CardTitle>
                       <CardDescription className="mt-1">
                         Card, Input, Button, Dialog, Drawer — border or <code>ring-1 ring-foreground/10</code>,
                         no shadow. Modals read as elevated from the dimmed backdrop behind them, not a shadow.
@@ -450,7 +450,7 @@ function App() {
                       shadow-md
                     </div>
                     <div>
-                      <CardTitle className="text-base">Floating — shadow-md</CardTitle>
+                      <CardTitle className="text-base">Raised Glass — shadow-md</CardTitle>
                       <CardDescription className="mt-1">
                         Popover, Dropdown Menu, Select, Combobox, Hover Card, Navigation Menu — anchored
                         overlays with no backdrop, so they need a shadow to lift off the page.
@@ -469,7 +469,7 @@ function App() {
                       shadow-lg
                     </div>
                     <div>
-                      <CardTitle className="text-base">Elevated — shadow-lg</CardTitle>
+                      <CardTitle className="text-base">Floating — shadow-lg</CardTitle>
                       <CardDescription className="mt-1">
                         Sheet, Toast, Context Menu, and nested submenus — edge-docked or stacked above another
                         floating layer, so they need more lift than a standard popup.
