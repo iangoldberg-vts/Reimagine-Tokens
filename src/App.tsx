@@ -106,9 +106,9 @@ const FUNCTIONAL_TOKENS: ColorToken[] = [
 ]
 
 const RADIUS_SCALE = [
-  { label: 'sm', className: 'rounded-sm', px: '4.8px' },
-  { label: 'md', className: 'rounded-md', px: '6.4px' },
-  { label: 'full', className: 'rounded-full', px: 'pill' },
+  { label: 'sm', className: 'rounded-sm', px: '5' },
+  { label: 'md', className: 'rounded-md', px: '6' },
+  { label: 'full', className: 'rounded-full', px: '999' },
 ]
 
 const TYPE_SCALE = [
