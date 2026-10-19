@@ -417,24 +417,26 @@ function App() {
                 <h3 className="mb-3 text-sm font-medium text-muted-foreground">Elevation</h3>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
                   <div className="flex flex-col gap-4">
-                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground ring-1 ring-foreground/10">
-                      ring-1 ring-foreground/10
-                    </div>
+                    <div className="h-16 rounded-lg bg-popover ring-1 ring-foreground/10" />
                     <div>
                       <CardTitle className="text-base">Base</CardTitle>
                       <CardDescription className="mt-1">
-                        Card, Input, Button, Dialog, Drawer — border or <code>ring-1 ring-foreground/10</code>,
-                        no shadow. Modals read as elevated from the dimmed backdrop behind them, not a shadow.
+                        The page canvas. Separation from cards comes from a one-step value difference, never a
+                        shadow.
                       </CardDescription>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">Examples:</span> Card, Input, Button,
+                        Dialog, Drawer
+                      </p>
                     </div>
                     <Dialog>
                       <DialogTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Dialog</Button>} />
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Flat surface</DialogTitle>
+                          <DialogTitle>Base</DialogTitle>
                           <DialogDescription>
-                            No shadow on this popup — just <code>ring-1 ring-foreground/10</code>. The dimmed
-                            overlay behind it does the elevation work.
+                            The page canvas. Separation from cards comes from a one-step value difference,
+                            never a shadow.
                           </DialogDescription>
                         </DialogHeader>
                       </DialogContent>
@@ -442,41 +444,49 @@ function App() {
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-md ring-1 ring-foreground/10">
-                      shadow-md
-                    </div>
+                    <div className="h-16 rounded-lg bg-popover shadow-md ring-1 ring-foreground/10" />
                     <div>
-                      <CardTitle className="text-base">Raised Glass — shadow-md</CardTitle>
+                      <CardTitle className="text-base">Raised Glass</CardTitle>
                       <CardDescription className="mt-1">
-                        Popover, Dropdown Menu, Select, Combobox, Hover Card, Navigation Menu — anchored
-                        overlays with no backdrop, so they need a shadow to lift off the page.
+                        The raised pattern used across the app. Frosted glass, not a flat token. Consistent
+                        across stat tiles, building headers, and content cards.
                       </CardDescription>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">Examples:</span> Popover, Dropdown Menu,
+                        Select, Combobox, Hover Card
+                      </p>
                     </div>
                     <Popover>
                       <PopoverTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Popover</Button>} />
                       <PopoverContent>
-                        This popup uses <code>shadow-md</code> plus <code>ring-1 ring-foreground/10</code>.
+                        <p className="font-medium text-foreground">Raised Glass</p>
+                        <p className="mt-1 text-muted-foreground">
+                          The raised pattern used across the app. Frosted glass, not a flat token.
+                        </p>
                       </PopoverContent>
                     </Popover>
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-lg ring-1 ring-foreground/10">
-                      shadow-lg
-                    </div>
+                    <div className="h-16 rounded-lg bg-popover shadow-lg ring-1 ring-foreground/10" />
                     <div>
-                      <CardTitle className="text-base">Floating — shadow-lg</CardTitle>
+                      <CardTitle className="text-base">Floating</CardTitle>
                       <CardDescription className="mt-1">
-                        Sheet, Toast, Context Menu, and nested submenus — edge-docked or stacked above another
-                        floating layer, so they need more lift than a standard popup.
+                        Deep blur, a pronounced shadow, and a slightly brighter border.
                       </CardDescription>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">Examples:</span> Sheet, Toast, Context
+                        Menu, and nested submenus
+                      </p>
                     </div>
                     <Sheet>
                       <SheetTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Sheet</Button>} />
                       <SheetContent>
                         <SheetHeader>
-                          <SheetTitle>Elevated surface</SheetTitle>
-                          <SheetDescription>This panel uses <code>shadow-lg</code>.</SheetDescription>
+                          <SheetTitle>Floating</SheetTitle>
+                          <SheetDescription>
+                            Deep blur, a pronounced shadow, and a slightly brighter border.
+                          </SheetDescription>
                         </SheetHeader>
                       </SheetContent>
                     </Sheet>
