@@ -146,8 +146,9 @@ const ICONS = [
 ]
 
 const IMAGE_RATIOS = [
-  { ratio: 1, label: 'Circle (Avatar)', shape: 'rounded-full' },
+  { ratio: 1, label: '1:1', shape: 'rounded-lg' },
   { ratio: 4 / 3, label: '4:3', shape: 'rounded-lg' },
+  { ratio: 1, label: 'Circle (Avatar)', shape: 'rounded-full' },
 ]
 
 const AI_PRINCIPLES = [
