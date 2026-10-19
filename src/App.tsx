@@ -105,6 +105,17 @@ const FUNCTIONAL_TOKENS: ColorToken[] = [
   { name: 'Declined', cssVar: '--declined', size: 'sm' },
 ]
 
+const RADIUS_SCALE = [
+  { label: 'sm', className: 'rounded-sm', px: '4.8px' },
+  { label: 'md', className: 'rounded-md', px: '6.4px' },
+  { label: 'lg', className: 'rounded-lg', px: '8px' },
+  { label: 'xl', className: 'rounded-xl', px: '11.2px' },
+  { label: '2xl', className: 'rounded-2xl', px: '14.4px' },
+  { label: '3xl', className: 'rounded-3xl', px: '17.6px' },
+  { label: '4xl', className: 'rounded-4xl', px: '20.8px' },
+  { label: 'full', className: 'rounded-full', px: 'pill' },
+]
+
 const TYPE_SCALE = [
   { label: 'Display', className: 'text-4xl font-semibold' },
   { label: 'H1', className: 'text-3xl font-semibold' },
@@ -395,71 +406,91 @@ function App() {
             title="Shapes and Elevation"
             description="Elevation follows the actual shadcn component conventions in this project."
           >
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-              <div className="flex flex-col gap-4">
-                <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground ring-1 ring-foreground/10">
-                  ring-1 ring-foreground/10
+            <div className="flex flex-col gap-8">
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Corner Radius</h3>
+                <div className="flex flex-wrap items-end gap-6">
+                  {RADIUS_SCALE.map((r) => (
+                    <div key={r.label} className="flex flex-col items-center gap-2">
+                      <div className={`size-16 border border-border bg-muted ${r.className}`} />
+                      <div className="text-center text-xs text-muted-foreground">
+                        <p className="font-medium text-foreground">{r.label}</p>
+                        <p>{r.px}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <CardTitle className="text-base">Flat</CardTitle>
-                  <CardDescription className="mt-1">
-                    Card, Input, Button, Dialog, Drawer — border or <code>ring-1 ring-foreground/10</code>, no
-                    shadow. Modals read as elevated from the dimmed backdrop behind them, not a shadow.
-                  </CardDescription>
-                </div>
-                <Dialog>
-                  <DialogTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Dialog</Button>} />
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Flat surface</DialogTitle>
-                      <DialogDescription>
-                        No shadow on this popup — just <code>ring-1 ring-foreground/10</code>. The dimmed
-                        overlay behind it does the elevation work.
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
               </div>
 
-              <div className="flex flex-col gap-4">
-                <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-md ring-1 ring-foreground/10">
-                  shadow-md
-                </div>
-                <div>
-                  <CardTitle className="text-base">Floating — shadow-md</CardTitle>
-                  <CardDescription className="mt-1">
-                    Popover, Dropdown Menu, Select, Combobox, Hover Card, Navigation Menu — anchored overlays
-                    with no backdrop, so they need a shadow to lift off the page.
-                  </CardDescription>
-                </div>
-                <Popover>
-                  <PopoverTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Popover</Button>} />
-                  <PopoverContent>
-                    This popup uses <code>shadow-md</code> plus <code>ring-1 ring-foreground/10</code>.
-                  </PopoverContent>
-                </Popover>
-              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Elevation</h3>
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground ring-1 ring-foreground/10">
+                      ring-1 ring-foreground/10
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Flat</CardTitle>
+                      <CardDescription className="mt-1">
+                        Card, Input, Button, Dialog, Drawer — border or <code>ring-1 ring-foreground/10</code>,
+                        no shadow. Modals read as elevated from the dimmed backdrop behind them, not a shadow.
+                      </CardDescription>
+                    </div>
+                    <Dialog>
+                      <DialogTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Dialog</Button>} />
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Flat surface</DialogTitle>
+                          <DialogDescription>
+                            No shadow on this popup — just <code>ring-1 ring-foreground/10</code>. The dimmed
+                            overlay behind it does the elevation work.
+                          </DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
 
-              <div className="flex flex-col gap-4">
-                <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-lg ring-1 ring-foreground/10">
-                  shadow-lg
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-md ring-1 ring-foreground/10">
+                      shadow-md
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Floating — shadow-md</CardTitle>
+                      <CardDescription className="mt-1">
+                        Popover, Dropdown Menu, Select, Combobox, Hover Card, Navigation Menu — anchored
+                        overlays with no backdrop, so they need a shadow to lift off the page.
+                      </CardDescription>
+                    </div>
+                    <Popover>
+                      <PopoverTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Popover</Button>} />
+                      <PopoverContent>
+                        This popup uses <code>shadow-md</code> plus <code>ring-1 ring-foreground/10</code>.
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="flex flex-col gap-4">
+                    <div className="flex h-16 items-center justify-center rounded-lg bg-popover text-xs text-muted-foreground shadow-lg ring-1 ring-foreground/10">
+                      shadow-lg
+                    </div>
+                    <div>
+                      <CardTitle className="text-base">Elevated — shadow-lg</CardTitle>
+                      <CardDescription className="mt-1">
+                        Sheet, Toast, Context Menu, and nested submenus — edge-docked or stacked above another
+                        floating layer, so they need more lift than a standard popup.
+                      </CardDescription>
+                    </div>
+                    <Sheet>
+                      <SheetTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Sheet</Button>} />
+                      <SheetContent>
+                        <SheetHeader>
+                          <SheetTitle>Elevated surface</SheetTitle>
+                          <SheetDescription>This panel uses <code>shadow-lg</code>.</SheetDescription>
+                        </SheetHeader>
+                      </SheetContent>
+                    </Sheet>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-base">Elevated — shadow-lg</CardTitle>
-                  <CardDescription className="mt-1">
-                    Sheet, Toast, Context Menu, and nested submenus — edge-docked or stacked above another
-                    floating layer, so they need more lift than a standard popup.
-                  </CardDescription>
-                </div>
-                <Sheet>
-                  <SheetTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Sheet</Button>} />
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle>Elevated surface</SheetTitle>
-                      <SheetDescription>This panel uses <code>shadow-lg</code>.</SheetDescription>
-                    </SheetHeader>
-                  </SheetContent>
-                </Sheet>
               </div>
             </div>
           </Section>
