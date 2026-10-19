@@ -106,9 +106,10 @@ const FUNCTIONAL_TOKENS: ColorToken[] = [
 ]
 
 const RADIUS_SCALE = [
-  { label: 'sm', className: 'rounded-sm', px: '5px' },
-  { label: 'md', className: 'rounded-md', px: '6px' },
-  { label: 'full', className: 'rounded-full', px: '999px' },
+  { label: 'sm', radius: 4 },
+  { label: 'md', radius: 8 },
+  { label: 'lg', radius: 12 },
+  { label: 'full', radius: 999 },
 ]
 
 const TYPE_SCALE = [
@@ -403,10 +404,10 @@ function App() {
                 <div className="flex flex-wrap items-end gap-6">
                   {RADIUS_SCALE.map((r) => (
                     <div key={r.label} className="flex flex-col items-center gap-2">
-                      <div className={`size-16 border border-border bg-muted ${r.className}`} />
+                      <div className="size-16 border border-border bg-muted" style={{ borderRadius: r.radius }} />
                       <div className="text-center text-xs text-muted-foreground">
                         <p className="font-medium text-foreground">{r.label}</p>
-                        <p>{r.px}</p>
+                        <p>{r.radius}px</p>
                       </div>
                     </div>
                   ))}
