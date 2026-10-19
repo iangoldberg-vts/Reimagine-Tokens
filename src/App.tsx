@@ -49,23 +49,19 @@ const SECTIONS = [
   { id: 'tokens', label: 'Tokens Applied to Components' },
 ]
 
-const DESKTOP_WIREFRAME = [
-  { span: 'col-span-12', height: 40 }, // header
-  { span: 'col-span-3', height: 96 }, // sidebar
-  { span: 'col-span-9', height: 96 }, // hero / chart
-  { span: 'col-span-4', height: 64 }, // card
-  { span: 'col-span-4', height: 64 }, // card
-  { span: 'col-span-4', height: 64 }, // card
-  { span: 'col-span-12', height: 80 }, // table
+const DESKTOP_WIREFRAME_ROWS: WireframeRow[] = [
+  { bleed: true, height: 36 }, // header — full-bleed, ignores the margin
+  { height: 108, items: ['col-span-4', 'col-span-8'] }, // sidebar + hero
+  { height: 108, items: ['col-span-4', 'col-span-4', 'col-span-4'] }, // three even cards
+  { bleed: true, height: 36 }, // footer — full-bleed, ignores the margin
 ]
 
-const MOBILE_WIREFRAME = [
-  { span: 'col-span-4', height: 32 }, // header
-  { span: 'col-span-4', height: 72 }, // hero
-  { span: 'col-span-2', height: 48 }, // card
-  { span: 'col-span-2', height: 48 }, // card
-  { span: 'col-span-4', height: 28 }, // list row
-  { span: 'col-span-4', height: 28 }, // list row
+const MOBILE_WIREFRAME_ROWS: WireframeRow[] = [
+  { bleed: true, height: 36 }, // header — full-bleed, ignores the margin
+  { height: 74, items: ['col-span-2', 'col-span-2'] }, // two even feature blocks
+  { height: 74, items: ['col-span-4'] }, // full-width hero / body block
+  { height: 36, items: ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'] }, // four equal stats
+  { bleed: true, height: 48 }, // footer — full-bleed, ignores the margin
 ]
 
 const SPACING_SCALE = [
@@ -198,22 +194,24 @@ function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
   )
 }
 
-type WireframeBlock = { span: string; height: number }
+type WireframeRow = { bleed: true; height: number } | { bleed?: false; height: number; items: string[] }
 
 function GridOverlayMock({
   label,
   columns,
   margin,
   gutter,
+  rowGap,
   width,
-  blocks,
+  rows,
 }: {
   label: string
   columns: number
   margin: number
   gutter: number
+  rowGap: number
   width?: number
-  blocks: WireframeBlock[]
+  rows: WireframeRow[]
 }) {
   const gridStyle = {
     gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
@@ -222,23 +220,29 @@ function GridOverlayMock({
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div
-        className={`rounded-md bg-muted ring-1 ring-border ${width ? '' : 'w-full'}`}
-        style={{ padding: margin, width }}
-      >
-        <div className="relative overflow-hidden rounded-sm bg-background">
-          {/* wireframe mock */}
-          <div className="relative z-0 grid" style={{ ...gridStyle, rowGap: 12 }}>
-            {blocks.map((b, i) => (
-              <div key={i} className={`${b.span} rounded-md bg-muted-foreground/20`} style={{ height: b.height }} />
-            ))}
-          </div>
-          {/* grid overlay */}
-          <div className="pointer-events-none absolute inset-0 z-10 grid" style={gridStyle}>
-            {Array.from({ length: columns }, (_, i) => (
-              <div key={i} className="h-full rounded-[2px] bg-destructive/10" />
-            ))}
-          </div>
+      <div className={`relative overflow-hidden rounded-md ring-1 ring-border ${width ? '' : 'w-full'}`} style={{ width }}>
+        {/* wireframe mock */}
+        <div className="relative z-0 flex flex-col" style={{ rowGap }}>
+          {rows.map((row, i) =>
+            row.bleed ? (
+              <div key={i} className="rounded-md bg-muted-foreground/20" style={{ height: row.height }} />
+            ) : (
+              <div key={i} className="grid" style={{ ...gridStyle, height: row.height, padding: `0 ${margin}px` }}>
+                {row.items.map((span, j) => (
+                  <div key={j} className={`${span} h-full rounded-md bg-muted-foreground/20`} />
+                ))}
+              </div>
+            )
+          )}
+        </div>
+        {/* grid overlay — spans the full height, inset only by the margin horizontally */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10 grid"
+          style={{ ...gridStyle, padding: `0 ${margin}px` }}
+        >
+          {Array.from({ length: columns }, (_, i) => (
+            <div key={i} className="h-full rounded-[2px] bg-destructive/10" />
+          ))}
         </div>
       </div>
       <div className="text-center text-xs text-muted-foreground">
@@ -316,8 +320,23 @@ function App() {
             </Card>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-[1fr_auto]">
-              <GridOverlayMock label="Desktop" columns={12} margin={76} gutter={24} blocks={DESKTOP_WIREFRAME} />
-              <GridOverlayMock label="Mobile" columns={4} margin={16} gutter={16} width={220} blocks={MOBILE_WIREFRAME} />
+              <GridOverlayMock
+                label="Desktop"
+                columns={12}
+                margin={76}
+                gutter={24}
+                rowGap={32}
+                rows={DESKTOP_WIREFRAME_ROWS}
+              />
+              <GridOverlayMock
+                label="Mobile"
+                columns={4}
+                margin={16}
+                gutter={16}
+                rowGap={32}
+                width={220}
+                rows={MOBILE_WIREFRAME_ROWS}
+              />
             </div>
           </Section>
 
