@@ -108,7 +108,7 @@ const FUNCTIONAL_TOKENS: ColorToken[] = [
 const RADIUS_SCALE = [
   { label: 'sm', radius: 4 },
   { label: 'md', radius: 8 },
-  { label: 'lg', radius: 12 },
+  { label: 'lg', radius: 14 },
   { label: 'full', radius: 999 },
 ]
 
