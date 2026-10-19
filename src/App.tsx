@@ -146,9 +146,9 @@ const ICONS = [
 ]
 
 const IMAGE_RATIOS = [
-  { ratio: 1, label: '1:1', shape: 'rounded-lg' },
-  { ratio: 4 / 3, label: '4:3', shape: 'rounded-lg' },
-  { ratio: 1, label: 'Circle (Avatar)', shape: 'rounded-full' },
+  { ratio: 1, label: '1:1', shape: 'rounded-lg', width: '100%' },
+  { ratio: 4 / 3, label: '4:3', shape: 'rounded-lg', width: '100%' },
+  { ratio: 1, label: 'Circle (Avatar)', shape: 'rounded-full', width: '75%' },
 ]
 
 const AI_PRINCIPLES = [
@@ -571,11 +571,13 @@ function App() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
               {IMAGE_RATIOS.map((item) => (
                 <div key={item.label} className="flex flex-col gap-2">
-                  <AspectRatio ratio={item.ratio}>
-                    <div className={`flex size-full items-center justify-center bg-muted text-muted-foreground ${item.shape}`}>
-                      <ImageIcon />
-                    </div>
-                  </AspectRatio>
+                  <div className="mx-auto" style={{ width: item.width }}>
+                    <AspectRatio ratio={item.ratio}>
+                      <div className={`flex size-full items-center justify-center bg-muted text-muted-foreground ${item.shape}`}>
+                        <ImageIcon />
+                      </div>
+                    </AspectRatio>
+                  </div>
                   <span className="text-xs text-muted-foreground">{item.label}</span>
                 </div>
               ))}
