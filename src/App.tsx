@@ -76,26 +76,33 @@ const SPACING_SCALE = [
   { px: 64, label: '5xl', example: 'Page margins' },
 ]
 
-const FUNCTIONAL_TOKENS = [
-  { name: 'Border', cssVar: '--border' },
-  { name: 'Ring', cssVar: '--ring' },
-  { name: 'Input', cssVar: '--input' },
-  { name: 'Muted', cssVar: '--muted' },
-  { name: 'Accent', cssVar: '--accent' },
-  { name: 'Success', cssVar: '--success' },
-  { name: 'Warning', cssVar: '--warning' },
-  { name: 'Destructive', cssVar: '--destructive' },
-  { name: 'Declined', cssVar: '--declined' },
+type ColorToken = { name: string; cssVar: string; size: 'lg' | 'md' | 'sm'; dark?: boolean }
+
+const PRIMARY_TOKENS: ColorToken[] = [
+  { name: 'Primary', cssVar: '--primary', size: 'lg' },
+  { name: 'Primary Foreground · Light', cssVar: '--primary-foreground', size: 'sm' },
+  { name: 'Primary Foreground · Dark', cssVar: '--primary-foreground', size: 'sm', dark: true },
 ]
 
-const BRAND_TOKENS = [
-  { name: 'Primary', cssVar: '--primary' },
-  { name: 'Secondary', cssVar: '--secondary' },
-  { name: 'Chart 1', cssVar: '--chart-1' },
-  { name: 'Chart 2', cssVar: '--chart-2' },
-  { name: 'Chart 3', cssVar: '--chart-3' },
-  { name: 'Chart 4', cssVar: '--chart-4' },
-  { name: 'Chart 5', cssVar: '--chart-5' },
+const SECONDARY_TOKENS: ColorToken[] = [
+  { name: 'Secondary', cssVar: '--secondary', size: 'md' },
+  { name: 'Chart 1', cssVar: '--chart-1', size: 'sm' },
+  { name: 'Chart 2', cssVar: '--chart-2', size: 'sm' },
+  { name: 'Chart 3', cssVar: '--chart-3', size: 'sm' },
+  { name: 'Chart 4', cssVar: '--chart-4', size: 'sm' },
+  { name: 'Chart 5', cssVar: '--chart-5', size: 'sm' },
+]
+
+const FUNCTIONAL_TOKENS: ColorToken[] = [
+  { name: 'Border', cssVar: '--border', size: 'md' },
+  { name: 'Muted', cssVar: '--muted', size: 'md' },
+  { name: 'Accent', cssVar: '--accent', size: 'sm' },
+  { name: 'Ring', cssVar: '--ring', size: 'sm' },
+  { name: 'Input', cssVar: '--input', size: 'sm' },
+  { name: 'Success', cssVar: '--success', size: 'sm' },
+  { name: 'Warning', cssVar: '--warning', size: 'sm' },
+  { name: 'Destructive', cssVar: '--destructive', size: 'sm' },
+  { name: 'Declined', cssVar: '--declined', size: 'sm' },
 ]
 
 const TYPE_SCALE = [
@@ -182,10 +189,24 @@ function Section({
   )
 }
 
-function ColorSwatch({ name, cssVar }: { name: string; cssVar: string }) {
+const SWATCH_HEIGHT = { lg: 'h-32', md: 'h-20', sm: 'h-16' } as const
+
+function ColorSwatch({
+  name,
+  cssVar,
+  size = 'sm',
+  dark = false,
+}: {
+  name: string
+  cssVar: string
+  size?: 'lg' | 'md' | 'sm'
+  dark?: boolean
+}) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="h-16 rounded-lg ring-1 ring-border" style={{ background: `var(${cssVar})` }} />
+    <div className={`flex flex-col gap-2 ${size === 'lg' ? 'col-span-2' : ''}`}>
+      <div className={dark ? 'dark' : undefined}>
+        <div className={`${SWATCH_HEIGHT[size]} rounded-lg ring-1 ring-border`} style={{ background: `var(${cssVar})` }} />
+      </div>
       <div className="text-xs">
         <p className="font-medium text-foreground">{name}</p>
         <p className="text-muted-foreground">{cssVar}</p>
@@ -443,21 +464,33 @@ function App() {
             </div>
           </Section>
 
-          <Section id="color" title="Color" description="Functional tokens drive UI state; brand tokens carry identity.">
+          <Section
+            id="color"
+            title="Color"
+            description="Brand tokens carry identity — primary leads, secondary and chart colors support it. Functional tokens drive UI state."
+          >
             <div className="flex flex-col gap-8">
               <div>
-                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Functional</h3>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Primary</h3>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-                  {FUNCTIONAL_TOKENS.map((t) => (
-                    <ColorSwatch key={t.cssVar} {...t} />
+                  {PRIMARY_TOKENS.map((t) => (
+                    <ColorSwatch key={t.name} {...t} />
                   ))}
                 </div>
               </div>
               <div>
-                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Brand</h3>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Secondary</h3>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-                  {BRAND_TOKENS.map((t) => (
-                    <ColorSwatch key={t.cssVar} {...t} />
+                  {SECONDARY_TOKENS.map((t) => (
+                    <ColorSwatch key={t.name} {...t} />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Functional</h3>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+                  {FUNCTIONAL_TOKENS.map((t) => (
+                    <ColorSwatch key={t.name} {...t} />
                   ))}
                 </div>
               </div>
