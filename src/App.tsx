@@ -44,8 +44,8 @@ const SECTIONS = [
   { id: 'type', label: 'Type Scale' },
   { id: 'icons', label: 'Iconography' },
   { id: 'imagery', label: 'Imagery' },
-  { id: 'ai', label: 'AI' },
   { id: 'tokens', label: 'Tokens Applied to Components' },
+  { id: 'ai', label: 'AI' },
 ]
 
 // Exact rect coordinates lifted from the Figma frames so the schematics copy them 1:1.
@@ -640,26 +640,6 @@ function App() {
             </div>
           </Section>
 
-          <Section id="ai" title="AI" description="Principles first, patterns second.">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {AI_PRINCIPLES.map(({ Icon, title, description }) => (
-                <Card key={title}>
-                  <CardHeader>
-                    <Icon className="mb-1 size-5 text-primary" />
-                    <CardTitle className="text-base">{title}</CardTitle>
-                    <CardDescription>{description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">Patterns</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Pattern examples (agent actions, confidence indicators, running states) go here.
-              </p>
-            </div>
-          </Section>
-
           <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
             <div className="flex flex-col gap-6">
               <Card>
@@ -699,6 +679,26 @@ function App() {
                   </p>
                 </CardFooter>
               </Card>
+            </div>
+          </Section>
+
+          <Section id="ai" title="AI" description="Principles first, patterns second.">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {AI_PRINCIPLES.map(({ Icon, title, description }) => (
+                <Card key={title}>
+                  <CardHeader>
+                    <Icon className="mb-1 size-5 text-primary" />
+                    <CardTitle className="text-base">{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">Patterns</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Pattern examples (agent actions, confidence indicators, running states) go here.
+              </p>
             </div>
           </Section>
         </main>
