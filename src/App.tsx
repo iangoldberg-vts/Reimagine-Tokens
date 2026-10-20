@@ -49,20 +49,36 @@ const SECTIONS = [
   { id: 'tokens', label: 'Tokens Applied to Components' },
 ]
 
-const DESKTOP_WIREFRAME_ROWS: WireframeRow[] = [
-  { bleed: true, height: 100 }, // header — full-bleed, ignores the margin
-  { height: 304, items: ['col-span-4', 'col-span-8'] }, // sidebar + hero
-  { height: 304, items: ['col-span-4', 'col-span-4', 'col-span-4'] }, // three even cards
-  { bleed: true, height: 100 }, // footer — full-bleed, ignores the margin
-]
+// Exact rect coordinates lifted from the Figma frames so the schematics copy them 1:1.
+const DESKTOP_SCHEMATIC = {
+  frame: { width: 1280, height: 900 },
+  column: { width: 70, xs: [78, 174, 270, 366, 462, 556, 654, 750, 844, 940, 1034, 1134] },
+  blocks: [
+    { x: 0, y: 0, width: 1280, height: 100 }, // header — full-bleed
+    { x: 78, y: 132, width: 358, height: 304 }, // sidebar
+    { x: 460, y: 132, width: 744, height: 304 }, // hero
+    { x: 78, y: 468, width: 360, height: 304 }, // card 1
+    { x: 459, y: 468, width: 360, height: 304 }, // card 2
+    { x: 844, y: 468, width: 360, height: 304 }, // card 3
+    { x: 0, y: 804, width: 1280, height: 100 }, // footer — full-bleed
+  ],
+}
 
-const MOBILE_WIREFRAME_ROWS: WireframeRow[] = [
-  { bleed: true, height: 100 }, // header — full-bleed, ignores the margin
-  { height: 204, items: ['col-span-2', 'col-span-2'] }, // two even feature blocks
-  { height: 206, items: ['col-span-4'] }, // full-width hero / body block
-  { height: 100, items: ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'] }, // four equal stats
-  { bleed: true, height: 136 }, // footer — full-bleed, ignores the margin
-]
+const MOBILE_SCHEMATIC = {
+  frame: { width: 402, height: 874 },
+  column: { width: 81, xs: [16, 113, 209, 306] },
+  blocks: [
+    { x: 0, y: 0, width: 402, height: 100 }, // header — full-bleed
+    { x: 16, y: 132, width: 178, height: 204 }, // feature left
+    { x: 210, y: 132, width: 178, height: 204 }, // feature right
+    { x: 16, y: 368, width: 372, height: 206 }, // hero / body
+    { x: 16, y: 606, width: 81, height: 100 }, // stat 1
+    { x: 112, y: 606, width: 81, height: 100 }, // stat 2
+    { x: 210, y: 606, width: 81, height: 100 }, // stat 3
+    { x: 308, y: 606, width: 81, height: 100 }, // stat 4
+    { x: 0, y: 738, width: 402, height: 136 }, // footer — full-bleed
+  ],
+}
 
 const SPACING_SCALE = [
   { px: 4, label: 'xs', example: 'Icon-to-label gap' },
@@ -232,62 +248,59 @@ function ColorSwatch({
   )
 }
 
-type WireframeRow = { bleed: true; height: number } | { bleed?: false; height: number; items: string[] }
+type SchematicRect = { x: number; y: number; width: number; height: number }
+
+type Schematic = {
+  frame: { width: number; height: number }
+  column: { width: number; xs: number[] }
+  blocks: SchematicRect[]
+}
 
 function GridOverlayMock({
   label,
-  columns,
-  margin,
-  gutter,
-  rowGap,
-  width,
-  rows,
+  caption,
+  schematic,
+  maxWidth,
 }: {
   label: string
-  columns: number
-  margin: number
-  gutter: number
-  rowGap: number
-  width?: number
-  rows: WireframeRow[]
+  caption: string
+  schematic: Schematic
+  maxWidth: number
 }) {
-  const gridStyle = {
-    gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-    columnGap: gutter,
-  }
+  const { frame, column, blocks } = schematic
+  const pct = (value: number, total: number) => `${(value / total) * 100}%`
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className={`relative overflow-hidden rounded-md ring-1 ring-border ${width ? '' : 'w-full'}`} style={{ width }}>
-        {/* wireframe mock */}
-        <div className="relative z-0 flex flex-col" style={{ rowGap }}>
-          {rows.map((row, i) =>
-            row.bleed ? (
-              <div key={i} className="rounded-md bg-muted-foreground/20" style={{ height: row.height }} />
-            ) : (
-              <div key={i} className="grid" style={{ ...gridStyle, height: row.height, padding: `0 ${margin}px` }}>
-                {row.items.map((span, j) => (
-                  <div key={j} className={`${span} h-full rounded-md bg-muted-foreground/20`} />
-                ))}
-              </div>
-            )
-          )}
-        </div>
-        {/* grid overlay — spans the full height, inset only by the margin horizontally */}
+      <div className="w-full" style={{ maxWidth }}>
         <div
-          className="pointer-events-none absolute inset-0 z-10 grid"
-          style={{ ...gridStyle, padding: `0 ${margin}px` }}
+          className="relative w-full overflow-hidden bg-background"
+          style={{ aspectRatio: `${frame.width} / ${frame.height}` }}
         >
-          {Array.from({ length: columns }, (_, i) => (
-            <div key={i} className="h-full rounded-[2px] bg-destructive/10" />
+          {blocks.map((b, i) => (
+            <div
+              key={i}
+              className="absolute bg-border"
+              style={{
+                left: pct(b.x, frame.width),
+                top: pct(b.y, frame.height),
+                width: pct(b.width, frame.width),
+                height: pct(b.height, frame.height),
+              }}
+            />
+          ))}
+          {column.xs.map((x, i) => (
+            <div
+              key={i}
+              className="pointer-events-none absolute inset-y-0 bg-destructive/10"
+              style={{ left: pct(x, frame.width), width: pct(column.width, frame.width) }}
+            />
           ))}
         </div>
       </div>
       <div className="text-center text-xs text-muted-foreground">
         <p className="font-medium text-foreground">{label}</p>
-        <p>
-          {columns} columns · {margin}px margin · {gutter}px gutter
-        </p>
+        <p>{caption}</p>
       </div>
     </div>
   )
@@ -352,23 +365,18 @@ function App() {
               <code>sm</code> and above: 12 columns · 76px margin · 24px gutter.
             </p>
 
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-[1fr_auto]">
+            <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-[1fr_auto]">
               <GridOverlayMock
                 label="Desktop"
-                columns={12}
-                margin={76}
-                gutter={24}
-                rowGap={32}
-                rows={DESKTOP_WIREFRAME_ROWS}
+                caption="12 columns · 76px margin · 24px gutter"
+                schematic={DESKTOP_SCHEMATIC}
+                maxWidth={1280}
               />
               <GridOverlayMock
                 label="Mobile"
-                columns={4}
-                margin={16}
-                gutter={16}
-                rowGap={32}
-                width={402}
-                rows={MOBILE_WIREFRAME_ROWS}
+                caption="4 columns · 16px margin · 16px gutter"
+                schematic={MOBILE_SCHEMATIC}
+                maxWidth={201}
               />
             </div>
           </Section>
