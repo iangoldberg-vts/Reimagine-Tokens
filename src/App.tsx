@@ -148,6 +148,12 @@ const FONT_WEIGHTS = [
   { label: 'black', weight: 900, className: 'font-black' },
 ]
 
+const LINE_HEIGHTS = [
+  { label: 'none', value: '1', className: 'leading-none' },
+  { label: 'normal', value: '1.5', className: 'leading-normal' },
+  { label: 'relaxed', value: '1.625', className: 'leading-relaxed' },
+]
+
 const ICONS = [
   { Icon: Home, name: 'Home' },
   { Icon: Building2, name: 'Building2' },
@@ -574,6 +580,23 @@ function App() {
                         <span className="w-20 shrink-0 text-xs text-muted-foreground">{w.label}</span>
                         <span className={`flex-1 text-lg ${w.className}`}>The quick brown fox</span>
                         <span className="shrink-0 text-right text-xs text-muted-foreground">{w.weight}</span>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Line Heights</h3>
+                <Card>
+                  <CardContent className="flex flex-col divide-y divide-border pt-6">
+                    {LINE_HEIGHTS.map((lh) => (
+                      <div key={lh.label} className="flex items-start gap-4 py-3 first:pt-0 last:pb-0">
+                        <span className="w-20 shrink-0 text-xs text-muted-foreground">{lh.label}</span>
+                        <p className={`max-w-md flex-1 ${lh.className}`}>
+                          The quick brown fox jumps over the lazy dog. A second sentence for context.
+                        </p>
+                        <span className="shrink-0 text-right text-xs text-muted-foreground">{lh.value}</span>
                       </div>
                     ))}
                   </CardContent>
