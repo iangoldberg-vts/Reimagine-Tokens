@@ -47,7 +47,7 @@ export function FilterBar() {
 
       {FILTER_SELECTS.map((filter) => (
         <div key={filter.id} className="flex min-w-40 flex-1 flex-col gap-1.5">
-          <Label htmlFor={filter.id} className="text-muted-foreground">
+          <Label htmlFor={filter.id} className="text-xs font-semibold text-muted-foreground">
             {filter.label}
           </Label>
           <Select>
