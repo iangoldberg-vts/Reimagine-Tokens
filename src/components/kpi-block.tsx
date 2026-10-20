@@ -20,7 +20,7 @@ export function KpiBlock() {
     <ToggleGroup
       aria-label="Filter by KPI"
       spacing={0}
-      className="flex w-full items-stretch rounded-xl border border-border bg-card"
+      className="flex w-full items-stretch rounded-xl border border-transparent bg-card"
     >
       {KPI_METRICS.map((metric, index) => (
         <Fragment key={metric.id}>
