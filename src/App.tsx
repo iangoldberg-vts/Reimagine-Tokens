@@ -95,29 +95,33 @@ type ColorToken = { name: string; cssVar: string; size: 'lg' | 'md' | 'sm'; dark
 
 const PRIMARY_TOKENS: ColorToken[] = [
   { name: 'Primary', cssVar: '--primary', size: 'lg' },
-  { name: 'Primary Foreground · Light', cssVar: '--primary-foreground', size: 'sm' },
-  { name: 'Primary Foreground · Dark', cssVar: '--primary-foreground', size: 'sm', dark: true },
-]
-
-const SECONDARY_TOKENS: ColorToken[] = [
+  { name: 'Primary Foreground', cssVar: '--primary-foreground', size: 'md' },
   { name: 'Secondary', cssVar: '--secondary', size: 'md' },
-  { name: 'Chart 1', cssVar: '--chart-1', size: 'sm' },
-  { name: 'Chart 2', cssVar: '--chart-2', size: 'sm' },
-  { name: 'Chart 3', cssVar: '--chart-3', size: 'sm' },
-  { name: 'Chart 4', cssVar: '--chart-4', size: 'sm' },
-  { name: 'Chart 5', cssVar: '--chart-5', size: 'sm' },
+  { name: 'Secondary Foreground', cssVar: '--secondary-foreground', size: 'md' },
+  { name: 'Muted', cssVar: '--muted', size: 'md' },
+  { name: 'Muted Foreground', cssVar: '--muted-foreground', size: 'md' },
+  { name: 'Accent', cssVar: '--accent', size: 'md' },
+  { name: 'Accent Foreground', cssVar: '--accent-foreground', size: 'md' },
 ]
 
-const FUNCTIONAL_TOKENS: ColorToken[] = [
-  { name: 'Border', cssVar: '--border', size: 'md' },
-  { name: 'Muted', cssVar: '--muted', size: 'md' },
-  { name: 'Accent', cssVar: '--accent', size: 'sm' },
-  { name: 'Ring', cssVar: '--ring', size: 'sm' },
-  { name: 'Input', cssVar: '--input', size: 'sm' },
-  { name: 'Success', cssVar: '--success', size: 'sm' },
-  { name: 'Warning', cssVar: '--warning', size: 'sm' },
-  { name: 'Destructive', cssVar: '--destructive', size: 'sm' },
-  { name: 'Declined', cssVar: '--declined', size: 'sm' },
+const SURFACE_TOKENS: ColorToken[] = [
+  { name: 'Background · Light', cssVar: '--background', size: 'md' },
+  { name: 'Background · Dark', cssVar: '--background', size: 'md', dark: true },
+  { name: 'Foreground · Light', cssVar: '--foreground', size: 'md' },
+  { name: 'Foreground · Dark', cssVar: '--foreground', size: 'md', dark: true },
+  { name: 'Card · Light', cssVar: '--card', size: 'md' },
+  { name: 'Card · Dark', cssVar: '--card', size: 'md', dark: true },
+  { name: 'Border · Light', cssVar: '--border', size: 'md' },
+  { name: 'Border · Dark', cssVar: '--border', size: 'md', dark: true },
+  { name: 'Ring · Light', cssVar: '--ring', size: 'md' },
+  { name: 'Ring · Dark', cssVar: '--ring', size: 'md', dark: true },
+]
+
+const SYSTEM_TOKENS: ColorToken[] = [
+  { name: 'Destructive', cssVar: '--destructive', size: 'md' },
+  { name: 'Success', cssVar: '--success', size: 'md' },
+  { name: 'Warning', cssVar: '--warning', size: 'md' },
+  { name: 'Declined', cssVar: '--declined', size: 'md' },
 ]
 
 const RADIUS_SCALE = [
@@ -533,7 +537,7 @@ function App() {
           <Section
             id="color"
             title="Color"
-            description="Brand tokens carry identity — primary leads, secondary and chart colors support it. Functional tokens drive UI state."
+            description="Indigo carries every primary action, with neutral tones for lower-emphasis controls. Surfaces use matched light/dark scales so the UI reads identically in either mode. System colors handle status and feedback."
           >
             <div className="flex flex-col gap-8">
               <div>
@@ -545,17 +549,23 @@ function App() {
                 </div>
               </div>
               <div>
-                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Secondary</h3>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">
+                  Surfaces (Light and Dark Mode)
+                </h3>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-                  {SECONDARY_TOKENS.map((t) => (
+                  {SURFACE_TOKENS.map((t) => (
                     <ColorSwatch key={t.name} {...t} />
                   ))}
                 </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Popover matches Card and Input matches Border in both modes, so they aren't
+                  shown separately.
+                </p>
               </div>
               <div>
-                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Functional</h3>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">System colors</h3>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-                  {FUNCTIONAL_TOKENS.map((t) => (
+                  {SYSTEM_TOKENS.map((t) => (
                     <ColorSwatch key={t.name} {...t} />
                   ))}
                 </div>
