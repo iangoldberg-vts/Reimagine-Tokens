@@ -437,9 +437,9 @@ function App() {
 
               <div>
                 <h3 className="mb-3 text-sm font-medium text-muted-foreground">Elevation</h3>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
                   <div className="flex flex-col gap-4">
-                    <div className="h-16 rounded-lg bg-popover ring-1 ring-foreground/10" />
+                    <div className="h-16 rounded-lg bg-popover" />
                     <div>
                       <CardTitle className="text-base">Base</CardTitle>
                       <CardDescription className="mt-1">
@@ -466,52 +466,64 @@ function App() {
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="h-16 rounded-lg bg-popover shadow-md ring-1 ring-foreground/10" />
+                    <div className="h-16 rounded-lg bg-popover shadow-md" />
                     <div>
-                      <CardTitle className="text-base">Raised Glass</CardTitle>
+                      <CardTitle className="text-base">shadow-md</CardTitle>
                       <CardDescription className="mt-1">
-                        The raised pattern used across the app. Frosted glass, not a flat token. Consistent
-                        across stat tiles, building headers, and content cards.
+                        The default raised surface for floating panels anchored to a trigger.
                       </CardDescription>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        <span className="font-medium text-foreground">Examples:</span> Popover, Dropdown Menu,
-                        Select, Combobox, Hover Card
+                        <span className="font-medium text-foreground">Examples:</span> Popover, Select,
+                        Combobox, Hover Card, and the top level of Dropdown Menu, Context Menu, and Menubar
                       </p>
                     </div>
                     <Popover>
                       <PopoverTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Popover</Button>} />
                       <PopoverContent>
-                        <p className="font-medium text-foreground">Raised Glass</p>
+                        <p className="font-medium text-foreground">shadow-md</p>
                         <p className="mt-1 text-muted-foreground">
-                          The raised pattern used across the app. Frosted glass, not a flat token.
+                          The default raised surface for floating panels anchored to a trigger.
                         </p>
                       </PopoverContent>
                     </Popover>
                   </div>
 
                   <div className="flex flex-col gap-4">
-                    <div className="h-16 rounded-lg bg-popover shadow-lg ring-1 ring-foreground/10" />
+                    <div className="h-16 rounded-lg bg-popover shadow-lg" />
                     <div>
-                      <CardTitle className="text-base">Floating</CardTitle>
+                      <CardTitle className="text-base">shadow-lg</CardTitle>
                       <CardDescription className="mt-1">
-                        Deep blur, a pronounced shadow, and a slightly brighter border.
+                        A heavier shadow for panels that sit above other floating content.
                       </CardDescription>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        <span className="font-medium text-foreground">Examples:</span> Sheet, Toast, Context
-                        Menu, and nested submenus
+                        <span className="font-medium text-foreground">Examples:</span> Sheet, Toast, and
+                        nested submenus in Dropdown Menu, Context Menu, and Menubar
                       </p>
                     </div>
                     <Sheet>
                       <SheetTrigger render={<Button variant="outline" size="sm" className="w-fit">Open Sheet</Button>} />
                       <SheetContent>
                         <SheetHeader>
-                          <SheetTitle>Floating</SheetTitle>
+                          <SheetTitle>shadow-lg</SheetTitle>
                           <SheetDescription>
-                            Deep blur, a pronounced shadow, and a slightly brighter border.
+                            A heavier shadow for panels that sit above other floating content.
                           </SheetDescription>
                         </SheetHeader>
                       </SheetContent>
                     </Sheet>
+                  </div>
+
+                  <div className="flex flex-col gap-4">
+                    <div className="h-16 rounded-lg bg-popover shadow-xl" />
+                    <div>
+                      <CardTitle className="text-base">shadow-xl</CardTitle>
+                      <CardDescription className="mt-1">
+                        Not used by any component yet. Reserved for an overlay heavier than Sheet or Toast.
+                      </CardDescription>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        <span className="font-medium text-foreground">Examples:</span> None yet
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
