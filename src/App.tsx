@@ -33,6 +33,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { FilterBar } from '@/components/filter-bar'
+import { KpiBlock } from '@/components/kpi-block'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -660,24 +661,45 @@ function App() {
           </Section>
 
           <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
-            <Card>
-              <CardHeader className="border-b">
-                <CardTitle>Filters</CardTitle>
-                <CardAction className="font-mono text-xs text-muted-foreground">
-                  input · select · button
-                </CardAction>
-              </CardHeader>
-              <CardContent className="py-6">
-                <FilterBar />
-              </CardContent>
-              <CardFooter className="border-t bg-transparent">
-                <p className="text-sm text-muted-foreground">
-                  Keyword filter matches free text; the three selects apply exact-match
-                  filters alongside it. All filters opens the full filter panel for
-                  anything beyond these four.
-                </p>
-              </CardFooter>
-            </Card>
+            <div className="flex flex-col gap-6">
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Filters</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    input · select · button
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="py-6">
+                  <FilterBar />
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Keyword filter matches free text; the three selects apply exact-match
+                    filters alongside it. All filters opens the full filter panel for
+                    anything beyond these four.
+                  </p>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>KPI block</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    toggle-group · separator
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="py-6">
+                  <KpiBlock />
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Each tile is a single-select toggle. Hover previews the raised
+                    surface; selecting one locks in the bordered, primary-colored state
+                    and filters the list below by that metric.
+                  </p>
+                </CardFooter>
+              </Card>
+            </div>
           </Section>
         </main>
       </div>
