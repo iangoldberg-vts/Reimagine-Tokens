@@ -113,16 +113,16 @@ const RADIUS_SCALE = [
 ]
 
 const TYPE_SCALE = [
-  { label: 'xs', px: '12px', rem: '0.75rem', className: 'text-xs font-semibold' },
-  { label: 'sm', px: '14px', rem: '0.875rem', className: 'text-sm font-semibold' },
-  { label: 'base', px: '16px', rem: '1rem', className: 'text-base font-semibold' },
-  { label: 'lg', px: '18px', rem: '1.125rem', className: 'text-lg font-semibold' },
-  { label: 'xl', px: '20px', rem: '1.25rem', className: 'text-xl font-semibold' },
-  { label: '2xl', px: '24px', rem: '1.5rem', className: 'text-2xl font-semibold' },
-  { label: '3xl', px: '30px', rem: '1.875rem', className: 'text-3xl font-semibold' },
-  { label: '4xl', px: '36px', rem: '2.25rem', className: 'text-4xl font-semibold' },
-  { label: '5xl', px: '48px', rem: '3rem', className: 'text-5xl font-semibold' },
-  { label: '6xl', px: '60px', rem: '3.75rem', className: 'text-6xl font-semibold' },
+  { label: 'Caption', px: '12px', rem: '0.75rem', className: 'text-xs font-semibold' },
+  { label: 'Small', px: '14px', rem: '0.875rem', className: 'text-sm font-semibold' },
+  { label: 'Body', px: '16px', rem: '1rem', className: 'text-base font-semibold' },
+  { label: 'Text', px: '18px', rem: '1.125rem', className: 'text-lg font-semibold' },
+  { label: 'Subhead', px: '20px', rem: '1.25rem', className: 'text-xl font-semibold' },
+  { label: 'Headline', px: '24px', rem: '1.5rem', className: 'text-2xl font-semibold' },
+  { label: 'Title', px: '30px', rem: '1.875rem', className: 'text-3xl font-semibold' },
+  { label: 'Display Small', px: '36px', rem: '2.25rem', className: 'text-4xl font-semibold' },
+  { label: 'Display', px: '48px', rem: '3rem', className: 'text-5xl font-semibold' },
+  { label: 'Display Large', px: '60px', rem: '3.75rem', className: 'text-6xl font-semibold' },
 ]
 
 const FONT_WEIGHTS = [
@@ -548,7 +548,7 @@ function App() {
                   <CardContent className="flex flex-col divide-y divide-border pt-6">
                     {TYPE_SCALE.map((t) => (
                       <div key={t.label} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
-                        <span className="w-12 shrink-0 text-xs text-muted-foreground">{t.label}</span>
+                        <span className="w-28 shrink-0 text-xs text-muted-foreground">{t.label}</span>
                         <span className={`flex-1 ${t.className}`}>{t.label}</span>
                         <span className="shrink-0 text-right text-xs text-muted-foreground">
                           {t.px} / {t.rem}
