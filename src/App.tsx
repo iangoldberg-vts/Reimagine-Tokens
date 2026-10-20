@@ -271,32 +271,30 @@ function GridOverlayMock({
   const pct = (value: number, total: number) => `${(value / total) * 100}%`
 
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="w-full" style={{ maxWidth }}>
-        <div
-          className="relative w-full overflow-hidden bg-card"
-          style={{ aspectRatio: `${frame.width} / ${frame.height}` }}
-        >
-          {blocks.map((b, i) => (
-            <div
-              key={i}
-              className="absolute bg-border"
-              style={{
-                left: pct(b.x, frame.width),
-                top: pct(b.y, frame.height),
-                width: pct(b.width, frame.width),
-                height: pct(b.height, frame.height),
-              }}
-            />
-          ))}
-          {column.xs.map((x, i) => (
-            <div
-              key={i}
-              className="pointer-events-none absolute inset-y-0 bg-destructive/10"
-              style={{ left: pct(x, frame.width), width: pct(column.width, frame.width) }}
-            />
-          ))}
-        </div>
+    <div className="flex w-full flex-col items-center gap-2" style={{ maxWidth }}>
+      <div
+        className="relative w-full overflow-hidden bg-card"
+        style={{ aspectRatio: `${frame.width} / ${frame.height}` }}
+      >
+        {blocks.map((b, i) => (
+          <div
+            key={i}
+            className="absolute bg-border"
+            style={{
+              left: pct(b.x, frame.width),
+              top: pct(b.y, frame.height),
+              width: pct(b.width, frame.width),
+              height: pct(b.height, frame.height),
+            }}
+          />
+        ))}
+        {column.xs.map((x, i) => (
+          <div
+            key={i}
+            className="pointer-events-none absolute inset-y-0 bg-destructive/10"
+            style={{ left: pct(x, frame.width), width: pct(column.width, frame.width) }}
+          />
+        ))}
       </div>
       <div className="text-center text-xs text-muted-foreground">
         <p className="font-medium text-foreground">{label}</p>
@@ -376,7 +374,7 @@ function App() {
                 label="Mobile"
                 caption="4 columns · 16px margin · 16px gutter"
                 schematic={MOBILE_SCHEMATIC}
-                maxWidth={201}
+                maxWidth={170}
               />
             </div>
           </Section>
