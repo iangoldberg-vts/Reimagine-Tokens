@@ -50,18 +50,18 @@ const SECTIONS = [
 ]
 
 const DESKTOP_WIREFRAME_ROWS: WireframeRow[] = [
-  { bleed: true, height: 36 }, // header — full-bleed, ignores the margin
-  { height: 108, items: ['col-span-4', 'col-span-8'] }, // sidebar + hero
-  { height: 108, items: ['col-span-4', 'col-span-4', 'col-span-4'] }, // three even cards
-  { bleed: true, height: 36 }, // footer — full-bleed, ignores the margin
+  { bleed: true, height: 100 }, // header — full-bleed, ignores the margin
+  { height: 304, items: ['col-span-4', 'col-span-8'] }, // sidebar + hero
+  { height: 304, items: ['col-span-4', 'col-span-4', 'col-span-4'] }, // three even cards
+  { bleed: true, height: 100 }, // footer — full-bleed, ignores the margin
 ]
 
 const MOBILE_WIREFRAME_ROWS: WireframeRow[] = [
-  { bleed: true, height: 36 }, // header — full-bleed, ignores the margin
-  { height: 74, items: ['col-span-2', 'col-span-2'] }, // two even feature blocks
-  { height: 74, items: ['col-span-4'] }, // full-width hero / body block
-  { height: 36, items: ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'] }, // four equal stats
-  { bleed: true, height: 48 }, // footer — full-bleed, ignores the margin
+  { bleed: true, height: 100 }, // header — full-bleed, ignores the margin
+  { height: 204, items: ['col-span-2', 'col-span-2'] }, // two even feature blocks
+  { height: 206, items: ['col-span-4'] }, // full-width hero / body block
+  { height: 100, items: ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'] }, // four equal stats
+  { bleed: true, height: 136 }, // footer — full-bleed, ignores the margin
 ]
 
 const SPACING_SCALE = [
@@ -357,7 +357,7 @@ function App() {
                 margin={16}
                 gutter={16}
                 rowGap={32}
-                width={220}
+                width={402}
                 rows={MOBILE_WIREFRAME_ROWS}
               />
             </div>
