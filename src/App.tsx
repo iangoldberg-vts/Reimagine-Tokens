@@ -27,13 +27,10 @@ import {
 } from 'lucide-react'
 
 import { AspectRatio } from '@/components/ui/aspect-ratio'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { FilterBar } from '@/components/filter-bar'
 
@@ -47,7 +44,6 @@ const SECTIONS = [
   { id: 'icons', label: 'Iconography' },
   { id: 'imagery', label: 'Imagery' },
   { id: 'ai', label: 'AI' },
-  { id: 'filters', label: 'Filters' },
   { id: 'tokens', label: 'Tokens Applied to Components' },
 ]
 
@@ -663,62 +659,15 @@ function App() {
             </div>
           </Section>
 
-          <Section
-            id="filters"
-            title="Filters"
-            description="A filter bar composed from Input, Label, Select, and Button — no hardcoded styles."
-          >
+          <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
             <Card>
-              <CardContent className="pt-6">
+              <CardHeader>
+                <CardTitle>Filters</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <FilterBar />
               </CardContent>
             </Card>
-          </Section>
-
-          <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Buttons</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2">
-                  <Button>Default</Button>
-                  <Button variant="outline">Outline</Button>
-                  <Button variant="secondary">Secondary</Button>
-                  <Button variant="destructive">Destructive</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Badges</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap items-center gap-2">
-                  <Badge>Default</Badge>
-                  <Badge variant="secondary">Secondary</Badge>
-                  <Badge variant="destructive">Destructive</Badge>
-                  <Badge variant="outline">Outline</Badge>
-                </CardContent>
-              </Card>
-
-              <Card className="sm:col-span-2">
-                <CardHeader>
-                  <CardTitle>Inputs & Select</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4 sm:flex-row">
-                  <Input placeholder="Search…" className="sm:max-w-xs" />
-                  <Select defaultValue="viewer">
-                    <SelectTrigger className="sm:w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Admin</SelectItem>
-                      <SelectItem value="viewer">Viewer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </CardContent>
-              </Card>
-            </div>
           </Section>
         </main>
       </div>
