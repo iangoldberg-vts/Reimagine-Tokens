@@ -125,6 +125,13 @@ const TYPE_SCALE = [
   { label: '6xl', px: '60px', rem: '3.75rem', className: 'text-6xl font-semibold' },
 ]
 
+const FONT_WEIGHTS = [
+  { label: 'normal', weight: 400, className: 'font-normal' },
+  { label: 'semibold', weight: 600, className: 'font-semibold' },
+  { label: 'bold', weight: 700, className: 'font-bold' },
+  { label: 'black', weight: 900, className: 'font-black' },
+]
+
 const ICONS = [
   { Icon: Home, name: 'Home' },
   { Icon: Building2, name: 'Building2' },
@@ -534,19 +541,39 @@ function App() {
           </Section>
 
           <Section id="type" title="Type Scale" description="Geist Variable, top to bottom.">
-            <Card>
-              <CardContent className="flex flex-col divide-y divide-border pt-6">
-                {TYPE_SCALE.map((t) => (
-                  <div key={t.label} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
-                    <span className="w-12 shrink-0 text-xs text-muted-foreground">{t.label}</span>
-                    <span className={`flex-1 ${t.className}`}>{t.label}</span>
-                    <span className="shrink-0 text-right text-xs text-muted-foreground">
-                      {t.px} / {t.rem}
-                    </span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <div className="flex flex-col gap-8">
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Font Sizes</h3>
+                <Card>
+                  <CardContent className="flex flex-col divide-y divide-border pt-6">
+                    {TYPE_SCALE.map((t) => (
+                      <div key={t.label} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                        <span className="w-12 shrink-0 text-xs text-muted-foreground">{t.label}</span>
+                        <span className={`flex-1 ${t.className}`}>{t.label}</span>
+                        <span className="shrink-0 text-right text-xs text-muted-foreground">
+                          {t.px} / {t.rem}
+                        </span>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-muted-foreground">Font Weights</h3>
+                <Card>
+                  <CardContent className="flex flex-col divide-y divide-border pt-6">
+                    {FONT_WEIGHTS.map((w) => (
+                      <div key={w.label} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                        <span className="w-20 shrink-0 text-xs text-muted-foreground">{w.label}</span>
+                        <span className={`flex-1 text-lg ${w.className}`}>The quick brown fox</span>
+                        <span className="shrink-0 text-right text-xs text-muted-foreground">{w.weight}</span>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </Section>
 
           <Section id="icons" title="Iconography" description="Lucide only, used at consistent sizes and stroke widths.">
