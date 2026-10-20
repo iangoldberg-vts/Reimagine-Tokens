@@ -28,7 +28,7 @@ import {
 
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -661,12 +661,22 @@ function App() {
 
           <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
             <Card>
-              <CardHeader>
+              <CardHeader className="border-b">
                 <CardTitle>Filters</CardTitle>
+                <CardAction className="font-mono text-xs text-muted-foreground">
+                  input · select · button
+                </CardAction>
               </CardHeader>
-              <CardContent>
+              <CardContent className="py-6">
                 <FilterBar />
               </CardContent>
+              <CardFooter className="border-t bg-transparent">
+                <p className="text-sm text-muted-foreground">
+                  Keyword filter matches free text; the three selects apply exact-match
+                  filters alongside it. All filters opens the full filter panel for
+                  anything beyond these four.
+                </p>
+              </CardFooter>
             </Card>
           </Section>
         </main>
