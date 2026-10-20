@@ -54,7 +54,7 @@ export function FilterBar() {
             <SelectTrigger id={filter.id} className="w-full">
               <SelectValue placeholder="Select" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent alignItemWithTrigger={false}>
               {filter.options.map((option) => (
                 <SelectItem key={option} value={option}>
                   {option}
