@@ -35,6 +35,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { FilterBar } from '@/components/filter-bar'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -46,6 +47,7 @@ const SECTIONS = [
   { id: 'icons', label: 'Iconography' },
   { id: 'imagery', label: 'Imagery' },
   { id: 'ai', label: 'AI' },
+  { id: 'filters', label: 'Filters' },
   { id: 'tokens', label: 'Tokens Applied to Components' },
 ]
 
@@ -659,6 +661,18 @@ function App() {
                 Pattern examples (agent actions, confidence indicators, running states) go here.
               </p>
             </div>
+          </Section>
+
+          <Section
+            id="filters"
+            title="Filters"
+            description="A filter bar composed from Input, Label, Select, and Button — no hardcoded styles."
+          >
+            <Card>
+              <CardContent className="pt-6">
+                <FilterBar />
+              </CardContent>
+            </Card>
           </Section>
 
           <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
