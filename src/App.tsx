@@ -274,7 +274,7 @@ function GridOverlayMock({
     <div className="flex flex-col items-center gap-2">
       <div className="w-full" style={{ maxWidth }}>
         <div
-          className="relative w-full overflow-hidden bg-background"
+          className="relative w-full overflow-hidden bg-card"
           style={{ aspectRatio: `${frame.width} / ${frame.height}` }}
         >
           {blocks.map((b, i) => (
