@@ -26,14 +26,19 @@ import {
   Users,
 } from 'lucide-react'
 
+import { useState } from 'react'
+
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { FieldLabel } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Switch } from '@/components/ui/switch'
 import { FilterBar } from '@/components/filter-bar'
 import { KpiBlock } from '@/components/kpi-block'
+import { SectionCard } from '@/components/section-card'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -314,6 +319,8 @@ function GridOverlayMock({
 }
 
 function App() {
+  const [sectionCardCollapsible, setSectionCardCollapsible] = useState(false)
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border">
@@ -698,6 +705,43 @@ function App() {
                     Each tile is a single-select toggle. Hover previews the raised
                     surface; selecting one locks in the bordered, primary-colored state
                     and filters the list below by that metric.
+                  </p>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Section card</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    card · collapsible · separator
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4 py-6">
+                  <FieldLabel className="w-fit">
+                    <Switch
+                      checked={sectionCardCollapsible}
+                      onCheckedChange={setSectionCardCollapsible}
+                    />
+                    Collapsible
+                  </FieldLabel>
+                  <SectionCard
+                    title="Lease info"
+                    collapsible={sectionCardCollapsible}
+                    items={[
+                      { label: 'LXD', value: '12/31/29' },
+                      { label: 'LCD', value: '01/01/24' },
+                      { label: 'RCD', value: '01/01/24' },
+                      { label: 'Lease type', value: 'Triple net' },
+                      { label: 'Market rent', value: '—' },
+                      { label: 'Term remaining', value: '3 years 2 months' },
+                    ]}
+                  />
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Values render at the defined size and weight. Toggle Collapsible
+                    to add the chevron and make the header expandable. Columns and
+                    the Edit action are also optional.
                   </p>
                 </CardFooter>
               </Card>
