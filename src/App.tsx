@@ -49,7 +49,7 @@ const SECTIONS = [
   { id: 'type', label: 'Type Scale' },
   { id: 'icons', label: 'Iconography' },
   { id: 'imagery', label: 'Imagery' },
-  { id: 'tokens', label: 'Tokens Applied to Components' },
+  { id: 'tokens', label: 'Tokens Applied to Blocks' },
   { id: 'ai', label: 'AI' },
 ]
 
@@ -669,7 +669,7 @@ function App() {
             </div>
           </Section>
 
-          <Section id="tokens" title="Tokens Applied to Components" description="A curated look at theme tokens in use.">
+          <Section id="tokens" title="Tokens Applied to Blocks" description="A curated look at theme tokens in use.">
             <div className="flex flex-col gap-6">
               <Card>
                 <CardHeader className="border-b">
