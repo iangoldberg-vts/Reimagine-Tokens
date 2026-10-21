@@ -40,6 +40,7 @@ import { FilterBar } from '@/components/filter-bar'
 import { KpiBlock } from '@/components/kpi-block'
 import { SectionCard } from '@/components/section-card'
 import { PageHeader } from '@/components/page-header'
+import { LeaseEventsChart } from '@/components/lease-events-chart'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -797,6 +798,25 @@ function App() {
                     Breadcrumb and title are always present. The default variant adds
                     a logo/avatar and metadata fields; Simple drops all of that for
                     just a title and an optional one-line descriptor.
+                  </p>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Chart</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    chart · tooltip · scroll-area · separator
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="py-6">
+                  <LeaseEventsChart />
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Hovering a bar dims it and opens an overlay with the total and
+                    the underlying lease records for that year. This is one hover
+                    option — other overlay variants come next.
                   </p>
                 </CardFooter>
               </Card>
