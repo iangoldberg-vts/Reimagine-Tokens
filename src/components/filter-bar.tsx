@@ -41,12 +41,12 @@ const FILTER_SELECTS: FilterSelectConfig[] = [
 export function FilterBar() {
   return (
     <div className="flex flex-wrap items-end gap-6">
-      <div className="flex min-w-40 flex-1 flex-col gap-1.5">
+      <div className="flex min-w-40 flex-1 flex-col gap-2">
         <Input placeholder="Keyword filter" />
       </div>
 
       {FILTER_SELECTS.map((filter) => (
-        <div key={filter.id} className="flex min-w-40 flex-1 flex-col gap-1.5">
+        <div key={filter.id} className="flex min-w-40 flex-1 flex-col gap-2">
           <Label htmlFor={filter.id} className="text-xs font-semibold text-muted-foreground">
             {filter.label}
           </Label>

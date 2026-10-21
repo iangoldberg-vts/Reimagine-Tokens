@@ -35,7 +35,7 @@ interface SectionCardProps {
 
 function SectionCardRow({ item }: { item: SectionCardItem }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 py-3">
+    <div className="flex items-baseline justify-between gap-4 py-4">
       <span className="text-sm text-muted-foreground">{item.label}</span>
       <span
         className={
@@ -84,7 +84,7 @@ export function SectionCard({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                className="group/section-card-trigger -ml-1.5"
+                className="group/section-card-trigger -ml-2"
               >
                 <ChevronDown className="transition-transform group-aria-expanded/section-card-trigger:rotate-180" />
               </Button>

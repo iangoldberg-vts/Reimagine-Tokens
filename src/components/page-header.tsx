@@ -56,7 +56,7 @@ export function PageHeader({
   return (
     <div className={className}>
       <Breadcrumb>
-        <BreadcrumbList className="text-xs">
+        <BreadcrumbList>
           {breadcrumbs.map((crumb, index) => (
             <Fragment key={crumb.label}>
               {index > 0 && <BreadcrumbSeparator />}
@@ -73,12 +73,12 @@ export function PageHeader({
       </Breadcrumb>
 
       {variant === "simple" ? (
-        <div className="mt-3 flex flex-col gap-1">
+        <div className="mt-4 flex flex-col gap-1">
           <h1 className="font-heading text-4xl font-bold text-foreground">{title}</h1>
           {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
       ) : (
-        <div className="mt-3 flex items-center gap-4">
+        <div className="mt-4 flex items-center gap-4">
           <Avatar className="size-16">
             {logoSrc && <AvatarImage src={logoSrc} alt={title} />}
             <AvatarFallback className="bg-muted">
@@ -95,7 +95,7 @@ export function PageHeader({
                   {fields.map((field, index) => (
                     <Fragment key={field.label}>
                       {index > 0 && <Separator orientation="vertical" className="h-8" />}
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           {field.label}
                           {field.info && (
