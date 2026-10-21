@@ -39,6 +39,7 @@ import { Switch } from '@/components/ui/switch'
 import { FilterBar } from '@/components/filter-bar'
 import { KpiBlock } from '@/components/kpi-block'
 import { SectionCard } from '@/components/section-card'
+import { PageHeader } from '@/components/page-header'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -128,6 +129,13 @@ const SYSTEM_TOKENS: ColorToken[] = [
   { name: 'Warning', cssVar: '--warning', size: 'md' },
   { name: 'Declined', cssVar: '--declined', size: 'md' },
 ]
+
+const PAGE_HEADER_BREADCRUMBS = [
+  { label: 'VTS Lease', href: '#' },
+  { label: 'Leases', href: '#' },
+  { label: 'Lease Profile' },
+]
+const PAGE_HEADER_TITLE = 'Equator Coffee & Provisions, Inc.'
 
 const RADIUS_SCALE = [
   { label: 'sm', radius: 4 },
@@ -320,6 +328,7 @@ function GridOverlayMock({
 
 function App() {
   const [sectionCardCollapsible, setSectionCardCollapsible] = useState(false)
+  const [pageHeaderSimple, setPageHeaderSimple] = useState(false)
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -742,6 +751,52 @@ function App() {
                     Values render at the defined size and weight. Toggle Collapsible
                     to add the chevron and make the header expandable. Columns and
                     the Edit action are also optional.
+                  </p>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Page header</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    breadcrumb · avatar · separator · tooltip · switch
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4 py-6">
+                  <FieldLabel className="w-fit">
+                    <Switch
+                      checked={pageHeaderSimple}
+                      onCheckedChange={setPageHeaderSimple}
+                    />
+                    Simple
+                  </FieldLabel>
+                  {pageHeaderSimple ? (
+                    <PageHeader
+                      variant="simple"
+                      breadcrumbs={PAGE_HEADER_BREADCRUMBS}
+                      title={PAGE_HEADER_TITLE}
+                      description="Placeholder descriptor text goes here."
+                    />
+                  ) : (
+                    <PageHeader
+                      breadcrumbs={PAGE_HEADER_BREADCRUMBS}
+                      title={PAGE_HEADER_TITLE}
+                      fields={[
+                        { label: 'Asset', value: '350 California Street' },
+                        {
+                          label: 'Standardized tenant',
+                          value: 'Not available',
+                          info: 'Whether this tenant has been matched to a standardized entity record.',
+                        },
+                      ]}
+                    />
+                  )}
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Breadcrumb and title are always present. The default variant adds
+                    a logo/avatar and metadata fields; Simple drops all of that for
+                    just a title and an optional one-line descriptor.
                   </p>
                 </CardFooter>
               </Card>
