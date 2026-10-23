@@ -36,11 +36,12 @@ import { FieldLabel } from '@/components/ui/field'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Switch } from '@/components/ui/switch'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { FilterBar } from '@/components/filter-bar'
 import { KpiBlock } from '@/components/kpi-block'
 import { SectionCard } from '@/components/section-card'
 import { PageHeader } from '@/components/page-header'
-import { LeaseEventsChart } from '@/components/lease-events-chart'
+import { LeaseEventsChart, type LeaseEventsTooltipStyle } from '@/components/lease-events-chart'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -330,6 +331,7 @@ function GridOverlayMock({
 function App() {
   const [sectionCardCollapsible, setSectionCardCollapsible] = useState(false)
   const [pageHeaderSimple, setPageHeaderSimple] = useState(false)
+  const [chartTooltipStyle, setChartTooltipStyle] = useState<LeaseEventsTooltipStyle>('overlay')
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -809,14 +811,25 @@ function App() {
                     chart · tooltip · scroll-area · separator
                   </CardAction>
                 </CardHeader>
-                <CardContent className="py-6">
-                  <LeaseEventsChart />
+                <CardContent className="flex flex-col gap-4 py-6">
+                  <ToggleGroup
+                    variant="outline"
+                    value={[chartTooltipStyle]}
+                    onValueChange={(value) =>
+                      setChartTooltipStyle(value[0] as LeaseEventsTooltipStyle)
+                    }
+                    className="w-fit"
+                  >
+                    <ToggleGroupItem value="overlay">Overlay</ToggleGroupItem>
+                    <ToggleGroupItem value="simple">Simple</ToggleGroupItem>
+                  </ToggleGroup>
+                  <LeaseEventsChart tooltipStyle={chartTooltipStyle} />
                 </CardContent>
                 <CardFooter className="border-t bg-transparent">
                   <p className="text-sm text-muted-foreground">
-                    Hovering a bar dims it and opens an overlay with the total and
-                    the underlying lease records for that year. This is one hover
-                    option — other overlay variants come next.
+                    Two hover options on the same chart. Overlay opens a scrollable
+                    breakdown of that year's lease records; Simple shows just the
+                    year and total in a compact bubble. Both dim the hovered bar.
                   </p>
                 </CardFooter>
               </Card>

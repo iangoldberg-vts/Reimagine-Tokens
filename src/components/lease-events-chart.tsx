@@ -144,11 +144,11 @@ function LeaseEventsTooltip({ active, payload }: LeaseEventsTooltipProps) {
 
   return (
     <div className="w-80 overflow-hidden rounded-lg border border-border/50 bg-background shadow-xl">
-      <div className="flex items-center justify-between px-4 pt-3 text-xs text-muted-foreground">
+      <div className="flex items-center justify-between px-4 pt-4 text-xs text-muted-foreground">
         <span>sf Expiring</span>
         <span>year</span>
       </div>
-      <div className="flex items-end justify-between px-4 pb-3">
+      <div className="flex items-end justify-between px-4 pb-4">
         <span className="text-3xl font-bold text-chart-1">{formatSf(expiring)}</span>
         <span className="text-lg font-bold text-foreground">{year}</span>
       </div>
@@ -158,7 +158,7 @@ function LeaseEventsTooltip({ active, payload }: LeaseEventsTooltipProps) {
           {expiringLeases.map((lease, index) => (
             <Fragment key={`${lease.tenant}-${index}`}>
               {index > 0 && <Separator />}
-              <div className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-3 py-2 text-sm">
+              <div className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-4 py-2 text-sm">
                 <span className="truncate font-medium text-foreground">{lease.tenant}</span>
                 <span className="truncate text-muted-foreground">{lease.building}</span>
                 <span className="text-foreground">{lease.sf.toLocaleString()} sf</span>
@@ -172,18 +172,39 @@ function LeaseEventsTooltip({ active, payload }: LeaseEventsTooltipProps) {
   )
 }
 
-export function LeaseEventsChart() {
+function LeaseEventsSimpleTooltip({ active, payload }: LeaseEventsTooltipProps) {
+  if (!active || !payload?.length) {
+    return null
+  }
+
+  const { year, expiring } = payload[0].payload
+
+  return (
+    <div className="relative rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground shadow-md">
+      <span className="font-medium">{year}:</span> {expiring.toLocaleString()} sf
+      <span className="absolute left-1/2 top-full -mt-1 size-2.5 -translate-x-1/2 rotate-45 rounded-[2px] border-r border-b border-border bg-background" />
+    </div>
+  )
+}
+
+export type LeaseEventsTooltipStyle = "overlay" | "simple"
+
+interface LeaseEventsChartProps {
+  tooltipStyle?: LeaseEventsTooltipStyle
+}
+
+export function LeaseEventsChart({ tooltipStyle = "overlay" }: LeaseEventsChartProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Lease events</CardTitle>
         <CardAction>
           <div className="flex flex-col items-end gap-1 text-xs font-medium text-muted-foreground">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <span className="size-2.5 rounded-full bg-border" />
               Terminating
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <span className="size-2.5 rounded-full bg-chart-1" />
               Expiring
             </div>
@@ -207,7 +228,16 @@ export function LeaseEventsChart() {
                 className: "fill-muted-foreground text-xs",
               }}
             />
-            <ChartTooltip content={<LeaseEventsTooltip />} cursor={false} />
+            <ChartTooltip
+              content={
+                tooltipStyle === "simple" ? (
+                  <LeaseEventsSimpleTooltip />
+                ) : (
+                  <LeaseEventsTooltip />
+                )
+              }
+              cursor={false}
+            />
             <Bar
               dataKey="expiring"
               stackId="events"
