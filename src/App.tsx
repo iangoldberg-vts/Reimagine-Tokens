@@ -41,6 +41,7 @@ import { FilterBar } from '@/components/filter-bar'
 import { KpiBlock } from '@/components/kpi-block'
 import { SectionCard } from '@/components/section-card'
 import { PageHeader } from '@/components/page-header'
+import { AppNavigation, type AppNavVariant } from '@/components/app-navigation'
 import { LeaseEventsChart, type LeaseEventsTooltipStyle } from '@/components/lease-events-chart'
 
 const SECTIONS = [
@@ -332,6 +333,8 @@ function App() {
   const [sectionCardCollapsible, setSectionCardCollapsible] = useState(false)
   const [pageHeaderSimple, setPageHeaderSimple] = useState(false)
   const [chartTooltipStyle, setChartTooltipStyle] = useState<LeaseEventsTooltipStyle>('overlay')
+  const [navExpanded, setNavExpanded] = useState(true)
+  const [navVariant, setNavVariant] = useState<AppNavVariant>('floating')
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -800,6 +803,68 @@ function App() {
                     Breadcrumb and title are always present. The default variant adds
                     a logo/avatar and metadata fields; Simple drops all of that for
                     just a title and an optional one-line descriptor.
+                  </p>
+                </CardFooter>
+              </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Navigation</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    sidebar · collapsible · popover · command · dropdown-menu · tooltip
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4 py-6">
+                  <div className="flex flex-wrap gap-2">
+                    <ToggleGroup
+                      variant="outline"
+                      value={[navExpanded ? 'expanded' : 'collapsed']}
+                      onValueChange={(value) => setNavExpanded(value[0] === 'expanded')}
+                      className="w-fit"
+                    >
+                      <ToggleGroupItem value="expanded">Expanded</ToggleGroupItem>
+                      <ToggleGroupItem value="collapsed">Rail</ToggleGroupItem>
+                    </ToggleGroup>
+                    <ToggleGroup
+                      variant="outline"
+                      value={[navVariant]}
+                      onValueChange={(value) => setNavVariant(value[0] as AppNavVariant)}
+                      className="w-fit"
+                    >
+                      <ToggleGroupItem value="sidebar">Flush</ToggleGroupItem>
+                      <ToggleGroupItem value="floating">Floating</ToggleGroupItem>
+                      <ToggleGroupItem value="inset">Inset</ToggleGroupItem>
+                    </ToggleGroup>
+                  </div>
+                  <div className="h-[680px] overflow-hidden rounded-xl ring-1 ring-border">
+                    <AppNavigation
+                      key={`${navExpanded}-${navVariant}`}
+                      embedded
+                      defaultOpen={navExpanded}
+                      variant={navVariant}
+                    >
+                      <div className="p-6">
+                        <PageHeader
+                          breadcrumbs={[{ label: 'Buildings', href: '#' }, { label: '200 Berkeley Street' }]}
+                          title="200 Berkeley Street"
+                          fields={[
+                            { label: 'Asset', value: '200 Berkeley Street' },
+                            { label: 'Occupancy', value: '94.2%' },
+                          ]}
+                        />
+                      </div>
+                    </AppNavigation>
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    The sidebar is always dark, in both themes, because it draws from the
+                    separate <code className="font-mono text-xs">sidebar-*</code> token
+                    family rather than the page surface. Parents with children expand in
+                    place while the sidebar is expanded; in the rail they move their
+                    children into a hover flyout so nothing is lost. The property switcher
+                    is a Command list in a Popover, and every floating surface remaps the
+                    popover tokens onto the sidebar ramp so it stays on the dark scale.
                   </p>
                 </CardFooter>
               </Card>
