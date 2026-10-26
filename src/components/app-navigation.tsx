@@ -317,6 +317,14 @@ interface NavEntryProps {
   onActivate: (label: string) => void
 }
 
+/**
+ * Idle nav items sit back at 70% so the active one reads as the only thing
+ * selected; hover brings an item to full strength. Applied from `isActive`
+ * rather than a `not-data-active:` variant so it never depends on Tailwind's
+ * variant ordering against the `data-active:` rules in sidebarMenuButtonVariants.
+ */
+const NAV_IDLE = "text-sidebar-foreground/70 hover:text-sidebar-foreground"
+
 /** A parent with children, rendered as an inline collapsible while expanded. */
 function NavCollapsibleEntry({ item, activeItem, onActivate }: NavEntryProps) {
   const childActive = item.items!.some((sub) => sub.label === activeItem)
@@ -329,7 +337,7 @@ function NavCollapsibleEntry({ item, activeItem, onActivate }: NavEntryProps) {
         render={
           <SidebarMenuButton
             isActive={open || childActive}
-            className="justify-start"
+            className={cn("justify-start", !(open || childActive) && NAV_IDLE)}
           />
         }
       >
@@ -349,6 +357,7 @@ function NavCollapsibleEntry({ item, activeItem, onActivate }: NavEntryProps) {
                 isActive={sub.label === activeItem}
                 render={<a href={sub.href ?? "#"} />}
                 onClick={() => onActivate(sub.label)}
+                className={cn(sub.label !== activeItem && NAV_IDLE)}
               >
                 <sub.icon aria-hidden="true" />
                 <span>{sub.label}</span>
@@ -371,7 +380,10 @@ function NavFlyoutEntry({ item, activeItem, onActivate }: NavEntryProps) {
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <SidebarMenuButton isActive={childActive}>
+            <SidebarMenuButton
+              isActive={childActive}
+              className={cn(!childActive && NAV_IDLE)}
+            >
               <Icon aria-hidden="true" />
               <span>{item.label}</span>
             </SidebarMenuButton>
@@ -401,7 +413,7 @@ function NavFlyoutEntry({ item, activeItem, onActivate }: NavEntryProps) {
 }
 
 interface NavLeafEntryProps extends NavEntryProps {
-  /** Drops to the `sm` button size and a dimmed foreground — used by the footer. */
+  /** Drops to the `sm` button size and smaller icons — used by the footer. */
   secondary?: boolean
 }
 
@@ -412,18 +424,20 @@ function NavLeafEntry({
   secondary = false,
 }: NavLeafEntryProps) {
   const Icon = item.icon
+  const active = item.label === activeItem
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
         size={secondary ? "sm" : "default"}
-        isActive={item.label === activeItem}
+        isActive={active}
         tooltip={item.label}
         render={<a href={item.href ?? "#"} />}
         onClick={() => onActivate(item.label)}
         className={cn(
-          secondary &&
-            "text-sidebar-foreground/70 hover:text-sidebar-foreground [&_svg]:size-3.5",
+          // Ask VTS keeps its accent at all times — it isn't a destination.
+          !active && !item.accent && NAV_IDLE,
+          secondary && "[&_svg]:size-3.5",
           item.accent &&
             "text-sidebar-primary hover:text-sidebar-primary data-active:text-sidebar-primary [&_svg]:text-sidebar-primary"
         )}
