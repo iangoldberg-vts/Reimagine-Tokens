@@ -104,7 +104,9 @@
     --sidebar-primary-foreground: oklch(0.13 0.005 258);
     --sidebar-accent: oklch(0.24 0.005 258);
     --sidebar-accent-foreground: oklch(0.95 0.008 258);
-    --sidebar-border: oklch(1 0 0 / 8%);
+    /* Drawn off --sidebar-foreground so it tracks the surface. At 8% white this
+       sat at 1.17:1 against --sidebar — effectively invisible; 20% holds ~1.6:1. */
+    --sidebar-border: oklch(0.90 0.008 258 / 20%);
     --sidebar-ring: oklch(0.67 0.13 278);
 }
 
@@ -156,7 +158,8 @@
     --sidebar-primary-foreground: oklch(0.13 0.005 258);
     --sidebar-accent: oklch(0.24 0.005 258);
     --sidebar-accent-foreground: oklch(0.93 0.005 258);
-    --sidebar-border: oklch(1 0 0 / 8%);
+    /* Matches this block's --sidebar-foreground chroma (0.005, not 0.008). */
+    --sidebar-border: oklch(0.90 0.005 258 / 20%);
     --sidebar-ring: oklch(0.67 0.13 278);
 }
 

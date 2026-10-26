@@ -218,21 +218,14 @@ function PropertySwitcher({
             type="button"
             aria-label={`Switch property — currently ${value}`}
             className={cn(
-              "flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm text-sidebar-foreground ring-sidebar-ring transition-colors outline-none",
-              "ring-1 ring-sidebar-border hover:bg-sidebar-accent focus-visible:ring-2 data-popup-open:bg-sidebar-accent",
-              collapsed && "justify-center p-2"
+              "flex min-h-16 w-full items-center gap-3 rounded-lg p-3 text-left text-sm text-sidebar-foreground ring-sidebar-ring transition-colors outline-none",
+              "ring-1 ring-sidebar-border hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent",
+              collapsed && "min-h-0 justify-center p-2"
             )}
           />
         }
       >
-        <span
-          className={cn(
-            "flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent",
-            collapsed && "size-auto bg-transparent"
-          )}
-        >
-          <Building2 className="size-4 shrink-0" aria-hidden="true" />
-        </span>
+        <Building2 className="size-4 shrink-0" aria-hidden="true" />
         {!collapsed && (
           <>
             <span className="min-w-0 flex-1 font-medium leading-snug">{value}</span>
@@ -528,7 +521,8 @@ export function AppSidebar({
       variant={variant}
       className={cn("border-none", className)}
     >
-      <SidebarHeader className="relative gap-2 p-2">
+      {/* pb-4 + SidebarGroup's own pt-2 gives a 24px gap below the switcher. */}
+      <SidebarHeader className="relative gap-2 p-2 pb-4">
         <div className="flex h-10 items-center justify-center">
           <VtsLogo markOnly={collapsed} className="text-sidebar-foreground" />
         </div>
