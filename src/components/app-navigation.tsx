@@ -218,7 +218,7 @@ function PropertySwitcher({
             type="button"
             aria-label={`Switch property — currently ${value}`}
             className={cn(
-              "flex min-h-12 w-full items-center gap-3 rounded-lg p-2 text-left text-sm text-sidebar-foreground ring-sidebar-ring transition-colors outline-none",
+              "flex min-h-12 w-full items-center gap-2 rounded-lg p-2 text-left text-sm text-sidebar-foreground ring-sidebar-ring transition-colors outline-none",
               "ring-1 ring-sidebar-border hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent",
               collapsed && "min-h-0 justify-center"
             )}
@@ -241,7 +241,7 @@ function PropertySwitcher({
         side="bottom"
         align="start"
         sideOffset={8}
-        className="w-[22rem] p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
+        className="w-80 p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
         style={SIDEBAR_SURFACE_VARS}
       >
         <Command>
@@ -251,7 +251,7 @@ function PropertySwitcher({
 
             <CommandGroup>
               <CommandItem value="All assets" onSelect={() => select("All assets")}>
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
                   <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
                 </span>
                 <span className="font-medium">All assets</span>
@@ -265,7 +265,7 @@ function PropertySwitcher({
                   value={portfolio.name}
                   onSelect={() => select(portfolio.name)}
                 >
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
                     <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
                   </span>
                   <span className="flex min-w-0 flex-col">
