@@ -190,25 +190,19 @@ function ActivityGroupCard({ group }: { group: ActivityGroup }) {
 
       <div className="flex items-center justify-between">
         {group.moreCount ? (
-          <button
-            type="button"
-            className="text-sm text-muted-foreground hover:text-foreground"
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto p-0 font-normal text-muted-foreground hover:text-foreground"
           >
             +{group.moreCount} more update
-          </button>
+          </Button>
         ) : (
           <span />
         )}
 
         <Popover open={commentOpen} onOpenChange={setCommentOpen}>
-          <PopoverTrigger
-            render={
-              <button
-                type="button"
-                className="text-sm font-medium text-primary hover:underline"
-              />
-            }
-          >
+          <PopoverTrigger render={<Button variant="link" size="sm" className="h-auto p-0" />}>
             Leave a comment
           </PopoverTrigger>
           <PopoverContent align="end" className="w-80 p-0">
@@ -233,7 +227,7 @@ export function ActivityFeed({ trigger, open, onOpenChange }: ActivityFeedProps)
       {trigger && <SheetTrigger render={trigger} />}
       <SheetContent showCloseButton={false} className="gap-0 p-0 sm:max-w-md">
         <SheetHeader className="flex-row items-center justify-between border-b border-border p-4">
-          <SheetTitle className="font-semibold">Activity Feed</SheetTitle>
+          <SheetTitle className="font-semibold">Activity feed</SheetTitle>
           <Button variant="link" size="sm" className="h-auto p-0">
             Mark all as read
           </Button>

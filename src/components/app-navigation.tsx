@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Collapsible,
   CollapsibleContent,
@@ -214,12 +215,13 @@ function PropertySwitcher({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         render={
-          <button
+          <Button
             type="button"
+            variant="ghost"
             aria-label={`Switch property — currently ${value}`}
             className={cn(
-              "flex min-h-12 w-full items-center gap-2 rounded-lg p-2 text-left text-sm text-sidebar-foreground ring-sidebar-ring transition-colors outline-none",
-              "ring-1 ring-sidebar-border hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent",
+              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg p-2 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
+              "ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent",
               collapsed && "min-h-0 justify-center"
             )}
           />
@@ -534,18 +536,20 @@ export function AppSidebar({
         </div>
 
         {collapsible !== "none" && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon-sm"
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
-            className="absolute top-3 -right-3 z-20 hidden size-6 items-center justify-center rounded-full bg-sidebar text-sidebar-foreground ring-1 ring-sidebar-border transition-colors outline-none hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-sidebar-ring md:flex"
+            className="absolute top-3 -right-3 z-20 hidden size-6 rounded-full bg-sidebar text-sidebar-foreground ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring md:flex"
           >
             {collapsed ? (
               <ChevronRight className="size-3.5" aria-hidden="true" />
             ) : (
               <ChevronLeft className="size-3.5" aria-hidden="true" />
             )}
-          </button>
+          </Button>
         )}
 
         <PropertySwitcher
