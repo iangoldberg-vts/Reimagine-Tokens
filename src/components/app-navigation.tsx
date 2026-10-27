@@ -74,7 +74,12 @@ import {
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { VtsLogo } from "@/components/vts-logo"
 
 /* ── Types ──────────────────────────────────────────────────────────────── */
@@ -376,37 +381,46 @@ function NavFlyoutEntry({ item, activeItem, onActivate }: NavEntryProps) {
 
   return (
     <SidebarMenuItem>
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <SidebarMenuButton
-              isActive={childActive}
-              className={cn(!childActive && NAV_IDLE)}
-            >
-              <Icon aria-hidden="true" />
-              <span>{item.label}</span>
-            </SidebarMenuButton>
-          }
-        />
-        <DropdownMenuContent
-          side="right"
-          align="start"
-          sideOffset={8}
-          className="min-w-48 ring-sidebar-border"
-          style={SIDEBAR_SURFACE_VARS}
-        >
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>{item.label}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {item.items!.map((sub) => (
-              <DropdownMenuItem key={sub.label} onClick={() => onActivate(sub.label)}>
-                <sub.icon aria-hidden="true" />
-                <span>{sub.label}</span>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Tooltip>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <TooltipTrigger
+                render={
+                  <SidebarMenuButton
+                    isActive={childActive}
+                    className={cn(!childActive && NAV_IDLE)}
+                  >
+                    <Icon aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                }
+              />
+            }
+          />
+          <DropdownMenuContent
+            side="right"
+            align="start"
+            sideOffset={8}
+            className="min-w-48 ring-sidebar-border"
+            style={SIDEBAR_SURFACE_VARS}
+          >
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>{item.label}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {item.items!.map((sub) => (
+                <DropdownMenuItem key={sub.label} onClick={() => onActivate(sub.label)}>
+                  <sub.icon aria-hidden="true" />
+                  <span>{sub.label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <TooltipContent side="right" align="center">
+          {item.label}
+        </TooltipContent>
+      </Tooltip>
     </SidebarMenuItem>
   )
 }
