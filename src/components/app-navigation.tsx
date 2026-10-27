@@ -227,7 +227,7 @@ function PropertySwitcher({
             aria-label={`Switch property — currently ${value}`}
             className={cn(
               "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg p-2 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
-              "ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent",
+              "ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
               collapsed && "min-h-0 justify-center"
             )}
           />
