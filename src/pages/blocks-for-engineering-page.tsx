@@ -15,7 +15,7 @@ export function BlocksForEngineeringPage() {
           if (label === "Activity feed") setActivityFeedOpen(true)
         }}
       >
-        <div className="p-6">
+        <div className="pt-8 pr-6 pb-6 pl-6">
           <PageHeader
             eyebrow="Built 1947 · 36 floors · Office"
             title="200 Berkeley Street"

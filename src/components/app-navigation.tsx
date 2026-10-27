@@ -19,6 +19,7 @@ import {
   Layers,
   LayoutGrid,
   ListChecks,
+  Menu,
   Scale,
   ShieldCheck,
   Sparkle,
@@ -527,7 +528,11 @@ export function AppSidebar({
     <Sidebar
       collapsible={collapsible}
       variant={variant}
-      className={cn("border-none", className)}
+      className={cn(
+        "border-none",
+        (variant === "floating" || variant === "inset") && "pt-6 pb-6 pl-6",
+        className
+      )}
     >
       {/* pb-4 + SidebarGroup's own pt-2 gives a 24px gap below the switcher. */}
       <SidebarHeader className="relative gap-2 p-2 pb-4">
@@ -593,6 +598,29 @@ export function AppSidebar({
   )
 }
 
+/* ── Mobile top bar ─────────────────────────────────────────────────────── */
+
+/** Below `md`, the sidebar collapses to an off-canvas sheet with no visible rail — this bar is the only way to open it. */
+function MobileTopBar() {
+  const { toggleSidebar } = useSidebar()
+
+  return (
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-sidebar-border bg-sidebar px-4 md:hidden">
+      <VtsLogo className="text-sidebar-foreground" />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        onClick={toggleSidebar}
+        aria-label="Open navigation"
+        className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+      >
+        <Menu aria-hidden="true" />
+      </Button>
+    </header>
+  )
+}
+
 /* ── Shell ──────────────────────────────────────────────────────────────── */
 
 export interface AppNavigationProps extends AppSidebarProps {
@@ -629,6 +657,7 @@ export function AppNavigation({
           className={cn(embedded && "absolute h-full", className)}
         />
         <SidebarInset className={cn(embedded && "min-h-0 overflow-auto")}>
+          <MobileTopBar />
           {children}
         </SidebarInset>
       </SidebarProvider>
