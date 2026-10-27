@@ -27,8 +27,10 @@ import {
 } from 'lucide-react'
 
 import { useState } from 'react'
+import { Link, Route, Routes } from 'react-router-dom'
 
 import { AspectRatio } from '@/components/ui/aspect-ratio'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -43,6 +45,8 @@ import { SectionCard } from '@/components/section-card'
 import { PageHeader } from '@/components/page-header'
 import { AppNavigation, type AppNavVariant } from '@/components/app-navigation'
 import { LeaseEventsChart, type LeaseEventsTooltipStyle } from '@/components/lease-events-chart'
+import { ActivityFeed } from '@/components/activity-feed'
+import { BlocksForEngineeringPage } from '@/pages/blocks-for-engineering-page'
 
 const SECTIONS = [
   { id: 'grid', label: 'Grid' },
@@ -329,7 +333,7 @@ function GridOverlayMock({
   )
 }
 
-function App() {
+function FoundationPage() {
   const [sectionCardCollapsible, setSectionCardCollapsible] = useState(false)
   const [pageHeaderSimple, setPageHeaderSimple] = useState(false)
   const [chartTooltipStyle, setChartTooltipStyle] = useState<LeaseEventsTooltipStyle>('overlay')
@@ -346,6 +350,12 @@ function App() {
             </div>
             <span className="font-heading text-sm font-semibold">Design System</span>
           </div>
+          <Link
+            to="/blocks-for-engineering"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Blocks for engineering
+          </Link>
         </div>
       </header>
 
@@ -898,6 +908,41 @@ function App() {
                   </p>
                 </CardFooter>
               </Card>
+
+              <Card>
+                <CardHeader className="border-b">
+                  <CardTitle>Activity feed</CardTitle>
+                  <CardAction className="font-mono text-xs text-muted-foreground">
+                    sheet · popover · scroll-area · badge
+                  </CardAction>
+                </CardHeader>
+                <CardContent className="flex items-center justify-center py-6">
+                  <div className="flex flex-col items-center gap-3 rounded-lg bg-sidebar p-2">
+                    <ActivityFeed
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="relative text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                        >
+                          <Bell />
+                          <Badge className="absolute -top-1 -right-1 h-4 min-w-4 justify-center px-1">
+                            82
+                          </Badge>
+                        </Button>
+                      }
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter className="border-t bg-transparent">
+                  <p className="text-sm text-muted-foreground">
+                    Same panel as before, but the trigger now lives in a right-side
+                    nav rail instead of the top bar — click the bell above to open
+                    it. Groups are per tenant/asset; each has an unread dot, an
+                    optional "+N more update" link, and its own comment composer.
+                  </p>
+                </CardFooter>
+              </Card>
             </div>
           </Section>
 
@@ -923,6 +968,15 @@ function App() {
         </main>
       </div>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<FoundationPage />} />
+      <Route path="/blocks-for-engineering" element={<BlocksForEngineeringPage />} />
+    </Routes>
   )
 }
 

@@ -349,7 +349,10 @@ function NavCollapsibleEntry({ item, activeItem, onActivate }: NavEntryProps) {
               <SidebarMenuSubButton
                 isActive={sub.label === activeItem}
                 render={<a href={sub.href ?? "#"} />}
-                onClick={() => onActivate(sub.label)}
+                onClick={(event) => {
+                  if (!sub.href || sub.href === "#") event.preventDefault()
+                  onActivate(sub.label)
+                }}
                 className={cn(sub.label !== activeItem && NAV_IDLE)}
               >
                 <sub.icon aria-hidden="true" />
@@ -426,7 +429,10 @@ function NavLeafEntry({
         isActive={active}
         tooltip={item.label}
         render={<a href={item.href ?? "#"} />}
-        onClick={() => onActivate(item.label)}
+        onClick={(event) => {
+          if (!item.href || item.href === "#") event.preventDefault()
+          onActivate(item.label)
+        }}
         className={cn(
           // Ask VTS keeps its accent at all times — it isn't a destination.
           !active && !item.accent && NAV_IDLE,
