@@ -137,12 +137,7 @@ const SYSTEM_TOKENS: ColorToken[] = [
   { name: 'Declined', cssVar: '--declined', size: 'md' },
 ]
 
-const PAGE_HEADER_BREADCRUMBS = [
-  { label: 'VTS Lease', href: '#' },
-  { label: 'Leases', href: '#' },
-  { label: 'Lease Profile' },
-]
-const PAGE_HEADER_TITLE = 'Equator Coffee & Provisions, Inc.'
+const PAGE_HEADER_TITLE = 'VTS Headquarters'
 
 const RADIUS_SCALE = [
   { label: 'sm', radius: 4 },
@@ -775,7 +770,7 @@ function FoundationPage() {
                 <CardHeader className="border-b">
                   <CardTitle>Page header</CardTitle>
                   <CardAction className="font-mono text-xs text-muted-foreground">
-                    breadcrumb · avatar · separator · tooltip · switch
+                    avatar · switch
                   </CardAction>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4 py-6">
@@ -789,30 +784,23 @@ function FoundationPage() {
                   {pageHeaderSimple ? (
                     <PageHeader
                       variant="simple"
-                      breadcrumbs={PAGE_HEADER_BREADCRUMBS}
-                      title={PAGE_HEADER_TITLE}
-                      description="Placeholder descriptor text goes here."
+                      title="Budgets"
+                      subtitle="Placeholder descriptor text goes here."
                     />
                   ) : (
                     <PageHeader
-                      breadcrumbs={PAGE_HEADER_BREADCRUMBS}
                       title={PAGE_HEADER_TITLE}
-                      fields={[
-                        { label: 'Asset', value: '350 California Street' },
-                        {
-                          label: 'Standardized tenant',
-                          value: 'Not available',
-                          info: 'Whether this tenant has been matched to a standardized entity record.',
-                        },
-                      ]}
+                      pageName="Leases"
+                      eyebrow="Built 2017 · 52 floors · Office"
+                      subtitle="114 West 41st Street, New York, NY 10036"
                     />
                   )}
                 </CardContent>
                 <CardFooter className="border-t bg-transparent">
                   <p className="text-sm text-muted-foreground">
-                    Breadcrumb and title are always present. The default variant adds
-                    a logo/avatar and metadata fields; Simple drops all of that for
-                    just a title and an optional one-line descriptor.
+                    Title is always present. The default variant adds a logo and the
+                    current page name next to the title; Simple drops the logo for
+                    just an eyebrow, title, and subtitle.
                   </p>
                 </CardFooter>
               </Card>
@@ -855,12 +843,10 @@ function FoundationPage() {
                     >
                       <div className="p-6">
                         <PageHeader
-                          breadcrumbs={[{ label: 'Buildings', href: '#' }, { label: '200 Berkeley Street' }]}
                           title="200 Berkeley Street"
-                          fields={[
-                            { label: 'Asset', value: '200 Berkeley Street' },
-                            { label: 'Occupancy', value: '94.2%' },
-                          ]}
+                          pageName="Overview"
+                          eyebrow="Built 1947 · 36 floors · Office"
+                          subtitle="200 Berkeley St, Boston, MA 02116"
                         />
                       </div>
                     </AppNavigation>

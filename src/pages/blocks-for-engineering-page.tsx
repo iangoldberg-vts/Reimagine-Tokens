@@ -17,10 +17,10 @@ export function BlocksForEngineeringPage() {
       >
         <div className="p-6">
           <PageHeader
-            variant="simple"
-            breadcrumbs={[{ label: "Design system", href: "#/" }, { label: "Blocks for engineering" }]}
-            title="Blocks for engineering"
-            description="A real page composed entirely from documented blocks — this header, the nav shell on the left, and Activity feed opened from the nav."
+            eyebrow="Built 1947 · 36 floors · Office"
+            title="200 Berkeley Street"
+            pageName="Overview"
+            subtitle="200 Berkeley St, Boston, MA 02116"
           />
         </div>
       </AppNavigation>
