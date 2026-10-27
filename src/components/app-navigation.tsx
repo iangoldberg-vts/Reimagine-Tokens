@@ -530,7 +530,7 @@ export function AppSidebar({
       variant={variant}
       className={cn(
         "border-none",
-        (variant === "floating" || variant === "inset") && "pt-6 pb-6 pl-6",
+        (variant === "floating" || variant === "inset") && "pt-4 pb-4 pl-4",
         className
       )}
     >
