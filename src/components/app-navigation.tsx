@@ -30,6 +30,7 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { ActivityFeed } from "@/components/activity-feed"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -467,6 +468,31 @@ function NavLeafEntry({
   )
 }
 
+/** Opens the activity feed as a white popover anchored to this footer link, instead of navigating. */
+function ActivityFeedNavItem({ item }: { item: AppNavItem }) {
+  const [open, setOpen] = React.useState(false)
+  const Icon = item.icon
+
+  return (
+    <SidebarMenuItem>
+      <ActivityFeed
+        open={open}
+        onOpenChange={setOpen}
+        trigger={
+          <SidebarMenuButton
+            size="sm"
+            isActive={open}
+            className={cn("[&_svg]:size-3.5", !open && NAV_IDLE)}
+          >
+            <Icon aria-hidden="true" />
+            <span>{item.label}</span>
+          </SidebarMenuButton>
+        }
+      />
+    </SidebarMenuItem>
+  )
+}
+
 function NavEntry(props: NavEntryProps) {
   const { state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
@@ -599,15 +625,19 @@ export function AppSidebar({
       <SidebarFooter className="gap-2 p-2">
         <SidebarSeparator className="mx-0" />
         <SidebarMenu className="gap-0.5">
-          {footerItems.map((item) => (
-            <NavLeafEntry
-              key={item.label}
-              item={item}
-              activeItem={active}
-              onActivate={handleActivate}
-              secondary
-            />
-          ))}
+          {footerItems.map((item) =>
+            item.label === "Activity feed" ? (
+              <ActivityFeedNavItem key={item.label} item={item} />
+            ) : (
+              <NavLeafEntry
+                key={item.label}
+                item={item}
+                activeItem={active}
+                onActivate={handleActivate}
+                secondary
+              />
+            )
+          )}
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>

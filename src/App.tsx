@@ -899,7 +899,7 @@ function FoundationPage() {
                 <CardHeader className="border-b">
                   <CardTitle>Activity feed</CardTitle>
                   <CardAction className="font-mono text-xs text-muted-foreground">
-                    sheet · popover · scroll-area · badge
+                    popover · dialog · badge
                   </CardAction>
                 </CardHeader>
                 <CardContent className="flex items-center justify-center py-6">

@@ -1,7 +1,15 @@
 import { useState, type ReactElement } from "react"
-import { CalendarIcon, FilePlusCorner, MessageSquare, Paperclip } from "lucide-react"
+import {
+  CalendarIcon,
+  Expand,
+  FilePlusCorner,
+  MessageSquare,
+  Paperclip,
+  Shrink,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import {
   InputGroup,
   InputGroupAddon,
@@ -9,14 +17,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 
 interface ActivityItem {
@@ -242,32 +242,89 @@ function ActivityGroupCard({ group }: { group: ActivityGroup }) {
   )
 }
 
+function ActivityFeedBody() {
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex flex-col divide-y divide-border">
+        {GROUPS.map((group) => (
+          <ActivityGroupCard key={group.id} group={group} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 interface ActivityFeedProps {
-  /** Renders its own trigger. Omit when the feed is opened from elsewhere via `open`/`onOpenChange`. */
-  trigger?: ReactElement
+  /** Renders its own trigger, anchoring the compact popover. */
+  trigger: ReactElement
+  /** Reflects whether either the compact popover or the expanded modal is showing. */
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }
 
-export function ActivityFeed({ trigger, open, onOpenChange }: ActivityFeedProps) {
+export function ActivityFeed({ trigger, open: openProp, onOpenChange }: ActivityFeedProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const open = openProp ?? internalOpen
+
+  function setOpen(next: boolean) {
+    if (onOpenChange) onOpenChange(next)
+    else setInternalOpen(next)
+    if (!next) setExpanded(false)
+  }
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      {trigger && <SheetTrigger render={trigger} />}
-      <SheetContent showCloseButton={false} className="gap-0 p-0 sm:max-w-md">
-        <SheetHeader className="flex-row items-center justify-between border-b border-border p-4">
-          <SheetTitle className="font-semibold">Activity feed</SheetTitle>
-          <Button variant="link" size="sm" className="h-auto p-0">
-            Mark all as read
-          </Button>
-        </SheetHeader>
-        <ScrollArea className="flex-1">
-          <div className="flex flex-col divide-y divide-border">
-            {GROUPS.map((group) => (
-              <ActivityGroupCard key={group.id} group={group} />
-            ))}
+    <>
+      <Popover open={open && !expanded} onOpenChange={setOpen}>
+        <PopoverTrigger render={trigger} />
+        <PopoverContent
+          side="top"
+          align="start"
+          sideOffset={8}
+          className="relative flex h-[32rem] w-96 flex-col gap-0 overflow-hidden p-0 data-closed:hidden"
+        >
+          <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border p-4">
+            <p className="font-semibold text-foreground">Activity feed</p>
+            <Button variant="link" size="sm" className="h-auto p-0">
+              Mark all as read
+            </Button>
           </div>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+          <ActivityFeedBody />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Expand activity feed"
+            onClick={() => setExpanded(true)}
+            className="absolute right-2 bottom-2"
+          >
+            <Expand className="size-4" />
+          </Button>
+        </PopoverContent>
+      </Popover>
+
+      <Dialog open={open && expanded} onOpenChange={setOpen}>
+        <DialogContent
+          showCloseButton={false}
+          className="flex h-[43.5rem] w-[644px] max-w-[calc(100%-2rem)] flex-col gap-0 p-0 sm:max-w-none"
+        >
+          <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border p-4">
+            <p className="font-semibold text-foreground">Activity feed</p>
+            <Button variant="link" size="sm" className="h-auto p-0">
+              Mark all as read
+            </Button>
+          </div>
+          <ActivityFeedBody />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Collapse activity feed"
+            onClick={() => setExpanded(false)}
+            className="absolute right-2 bottom-2"
+          >
+            <Shrink className="size-4" />
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

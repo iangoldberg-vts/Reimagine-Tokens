@@ -1,12 +1,10 @@
 import { useState } from "react"
-import { ActivityFeed } from "@/components/activity-feed"
 import { AppNavigation } from "@/components/app-navigation"
 import { AiChatTriggerButton, ChatPanel } from "@/components/chat-panel"
 import { PageHeader } from "@/components/page-header"
 import { SearchOverlay } from "@/components/search-overlay"
 
 export function BlocksForEngineeringPage() {
-  const [activityFeedOpen, setActivityFeedOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
 
@@ -17,7 +15,6 @@ export function BlocksForEngineeringPage() {
         variant="floating"
         onActiveItemChange={(label) => {
           if (label === "Search") setSearchOpen(true)
-          else if (label === "Activity feed") setActivityFeedOpen(true)
         }}
       >
         <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-[347px]" : "pr-6"}`}>
@@ -34,7 +31,6 @@ export function BlocksForEngineeringPage() {
           <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />
         </div>
       </AppNavigation>
-      <ActivityFeed open={activityFeedOpen} onOpenChange={setActivityFeedOpen} />
       {chatOpen && <ChatPanel />}
     </div>
   )
