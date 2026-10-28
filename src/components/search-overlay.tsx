@@ -186,7 +186,10 @@ export function SearchOverlay({
 
   return (
     <>
-      <div className="absolute inset-0 z-40" onClick={close} />
+      <div
+        className="fixed inset-0 z-40 bg-black/10 transition-opacity duration-150 supports-backdrop-filter:backdrop-blur-xs"
+        onClick={close}
+      />
       <Card className="absolute top-36 left-1/2 z-50 max-h-[32rem] w-[437px] -translate-x-1/2 gap-4 border border-border p-0 py-4 ring-0 shadow-md">
         <InputGroup className="h-auto border-0 px-4 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
           <InputGroupAddon className="pl-0">
