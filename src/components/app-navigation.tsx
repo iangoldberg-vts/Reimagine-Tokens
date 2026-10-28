@@ -228,7 +228,7 @@ function PropertySwitcher({
             variant="ghost"
             aria-label={`Switch property — currently ${value}`}
             className={cn(
-              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg bg-sidebar-accent p-2 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
+              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg bg-sidebar-accent px-2 py-4 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
               "ring-1 ring-sidebar-border hover:brightness-125 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
               collapsed && "min-h-0 justify-center"
             )}
@@ -256,7 +256,7 @@ function PropertySwitcher({
       >
         <Command>
           <CommandInput placeholder="Search properties..." />
-          <CommandList className="max-h-80">
+          <CommandList className="max-h-80 pt-2">
             <CommandEmpty>No properties found.</CommandEmpty>
 
             <CommandGroup>
