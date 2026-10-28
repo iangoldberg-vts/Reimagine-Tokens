@@ -21,6 +21,7 @@ import {
   ListChecks,
   Menu,
   Scale,
+  Search,
   ShieldCheck,
   Sparkle,
   UsersRound,
@@ -156,6 +157,7 @@ export const VTS_NAV_ITEMS: AppNavItem[] = [
 ]
 
 export const VTS_NAV_FOOTER_ITEMS: AppNavItem[] = [
+  { label: "Search", icon: Search, href: "#" },
   { label: "Activity feed", icon: Activity, href: "#" },
   { label: "Reminders", icon: Bell, href: "#" },
   { label: "Profile", icon: CircleUser, href: "#" },
@@ -226,8 +228,8 @@ function PropertySwitcher({
             variant="ghost"
             aria-label={`Switch property — currently ${value}`}
             className={cn(
-              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg p-2 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
-              "ring-1 ring-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring data-popup-open:bg-sidebar-accent aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
+              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg bg-sidebar-accent p-2 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
+              "ring-1 ring-sidebar-border hover:brightness-125 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
               collapsed && "min-h-0 justify-center"
             )}
           />
@@ -249,7 +251,7 @@ function PropertySwitcher({
         side="bottom"
         align="start"
         sideOffset={8}
-        className="w-80 p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
+        className="w-[309px] p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
         style={SIDEBAR_SURFACE_VARS}
       >
         <Command>

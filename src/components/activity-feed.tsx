@@ -1,10 +1,11 @@
 import { useState, type ReactElement } from "react"
-import { CalendarIcon, MessageSquare, Paperclip, Plus, XIcon } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { CalendarIcon, FilePlusCorner, MessageSquare, Paperclip } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -31,8 +32,6 @@ interface ActivityGroup {
   id: string
   entity: string
   address: string
-  unread: boolean
-  tag?: string
   items: ActivityItem[]
   moreCount?: number
 }
@@ -42,7 +41,6 @@ const GROUPS: ActivityGroup[] = [
     id: "starbucks-northpark",
     entity: "Starbucks Corporation",
     address: "NorthPark Center, 8687 North Central Expressway",
-    unread: false,
     items: [
       {
         id: "1",
@@ -58,8 +56,6 @@ const GROUPS: ActivityGroup[] = [
     id: "starbucks-metro",
     entity: "Starbucks Corporation",
     address: "Metro Tower, 500 Park Lane",
-    unread: true,
-    tag: "a big new space",
     items: [
       {
         id: "2",
@@ -76,7 +72,6 @@ const GROUPS: ActivityGroup[] = [
     id: "taco",
     entity: "Taco",
     address: "1100 Lonsdale, 1100 Lonsdale",
-    unread: true,
     items: [
       {
         id: "3",
@@ -92,7 +87,6 @@ const GROUPS: ActivityGroup[] = [
     id: "apple",
     entity: "Apple Inc.",
     address: "1100 Lonsdale, 1100 Lonsdale",
-    unread: true,
     items: [
       {
         id: "4",
@@ -107,11 +101,11 @@ const GROUPS: ActivityGroup[] = [
 ]
 
 function ActivityIcon({ type }: { type: ActivityItem["icon"] }) {
-  const Icon = type === "create" ? Plus : MessageSquare
+  const Icon = type === "create" ? FilePlusCorner : MessageSquare
   return (
     <span
       className={`flex size-8 shrink-0 items-center justify-center rounded-full text-background ${
-        type === "create" ? "bg-success" : "bg-warning"
+        type === "create" ? "bg-chart-4" : "bg-chart-5"
       }`}
     >
       <Icon className="size-4" />
@@ -119,35 +113,71 @@ function ActivityIcon({ type }: { type: ActivityItem["icon"] }) {
   )
 }
 
-function CommentComposer({ onClose }: { onClose: () => void }) {
+function formatDate(date: Date) {
+  const mm = String(date.getMonth() + 1).padStart(2, "0")
+  const dd = String(date.getDate()).padStart(2, "0")
+  return `${mm}/${dd}/${date.getFullYear()}`
+}
+
+function CommentComposer({
+  onCancel,
+  onPost,
+}: {
+  onCancel: () => void
+  onPost: () => void
+}) {
   const [value, setValue] = useState("")
+  const [date, setDate] = useState<Date | undefined>()
+  const [datePickerOpen, setDatePickerOpen] = useState(false)
 
   return (
-    <div className="flex w-80 flex-col gap-4 p-4">
-      <div className="flex items-start justify-between gap-2">
-        <Textarea
-          placeholder="Enter comment"
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          className="flex-1"
-        />
-        <Button variant="ghost" size="icon-sm" onClick={onClose} className="-mt-1 -mr-1">
-          <XIcon />
-        </Button>
-      </div>
+    <div className="flex w-full flex-col gap-2">
+      <Textarea
+        placeholder="Enter comment"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+      />
       <Button variant="outline" className="justify-start gap-2 font-normal text-muted-foreground">
         <Paperclip className="size-4" />
         Attach or drop files
       </Button>
       <InputGroup>
-        <InputGroupInput placeholder="MM/DD/YYYY" />
+        <InputGroupInput placeholder="MM/DD/YYYY" readOnly value={date ? formatDate(date) : ""} />
         <InputGroupAddon align="inline-end">
-          <CalendarIcon className="size-4" />
+          <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+            <PopoverTrigger
+              render={<InputGroupButton size="icon-xs" aria-label="Choose a date" />}
+            >
+              <CalendarIcon className="size-4" />
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-auto p-0 data-closed:hidden">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(selected) => {
+                  setDate(selected)
+                  setDatePickerOpen(false)
+                }}
+              />
+            </PopoverContent>
+          </Popover>
         </InputGroupAddon>
       </InputGroup>
-      <Button disabled={value.length === 0} className="self-end">
-        Post
-      </Button>
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="link" size="sm" className="h-auto p-0" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button
+          size="sm"
+          disabled={value.length === 0}
+          onClick={() => {
+            setValue("")
+            onPost()
+          }}
+        >
+          Post
+        </Button>
+      </div>
     </div>
   )
 }
@@ -157,19 +187,10 @@ function ActivityGroupCard({ group }: { group: ActivityGroup }) {
 
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="font-semibold text-foreground">{group.entity}</p>
-          <p className="text-sm text-muted-foreground">{group.address}</p>
-        </div>
-        {group.unread && <span className="mt-1 size-2 shrink-0 rounded-full bg-primary" />}
+      <div>
+        <p className="font-semibold text-foreground">{group.entity}</p>
+        <p className="text-sm text-muted-foreground">{group.address}</p>
       </div>
-
-      {group.tag && (
-        <Badge variant="secondary" className="w-fit">
-          {group.tag}
-        </Badge>
-      )}
 
       <div className="flex flex-col gap-4">
         {group.items.map((item) => (
@@ -188,28 +209,35 @@ function ActivityGroupCard({ group }: { group: ActivityGroup }) {
         ))}
       </div>
 
-      <div className="flex items-center justify-between">
-        {group.moreCount ? (
+      {commentOpen ? (
+        <CommentComposer
+          onCancel={() => setCommentOpen(false)}
+          onPost={() => setCommentOpen(false)}
+        />
+      ) : (
+        <div className="flex items-center justify-between">
+          {group.moreCount ? (
+            <Button
+              variant="link"
+              size="sm"
+              className="h-auto p-0 font-normal text-muted-foreground hover:text-foreground"
+            >
+              +{group.moreCount} more update
+            </Button>
+          ) : (
+            <span />
+          )}
+
           <Button
             variant="link"
             size="sm"
-            className="h-auto p-0 font-normal text-muted-foreground hover:text-foreground"
+            className="h-auto p-0"
+            onClick={() => setCommentOpen(true)}
           >
-            +{group.moreCount} more update
-          </Button>
-        ) : (
-          <span />
-        )}
-
-        <Popover open={commentOpen} onOpenChange={setCommentOpen}>
-          <PopoverTrigger render={<Button variant="link" size="sm" className="h-auto p-0" />}>
             Leave a comment
-          </PopoverTrigger>
-          <PopoverContent align="end" className="w-80 p-0">
-            <CommentComposer onClose={() => setCommentOpen(false)} />
-          </PopoverContent>
-        </Popover>
-      </div>
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
