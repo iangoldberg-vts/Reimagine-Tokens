@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import { Image as ImageIcon, type LucideIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface PageHeaderProps {
@@ -53,7 +53,11 @@ export function PageHeader({
         <Avatar className="size-20">
           {logoSrc && <AvatarImage src={logoSrc} alt={title} />}
           <AvatarFallback className="bg-muted">
-            {Icon && <Icon className="size-8 text-muted-foreground" />}
+            {Icon ? (
+              <Icon className="size-8 text-muted-foreground" />
+            ) : (
+              <ImageIcon className="size-8 text-muted-foreground/50" />
+            )}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col gap-1">
