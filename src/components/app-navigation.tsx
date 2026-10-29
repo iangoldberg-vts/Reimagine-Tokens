@@ -26,11 +26,13 @@ import {
   Sparkle,
   UsersRound,
   Wallet,
+  X,
   type LucideIcon,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { ActivityFeed } from "@/components/activity-feed"
+import { MobileFullPage } from "@/components/mobile-full-page"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -199,15 +201,15 @@ const SIDEBAR_SURFACE_VARS = {
 /* ── Property switcher ──────────────────────────────────────────────────── */
 
 interface PropertySwitcherProps {
-  value: string
-  onValueChange: (value: string) => void
+  values: string[]
+  onValuesChange: (values: string[]) => void
   portfolios: AppNavPortfolio[]
   properties: AppNavProperty[]
 }
 
 function PropertySwitcher({
-  value,
-  onValueChange,
+  values,
+  onValuesChange,
   portfolios,
   properties,
 }: PropertySwitcherProps) {
@@ -215,37 +217,140 @@ function PropertySwitcher({
   const { state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
 
-  const select = (next: string) => {
-    onValueChange(next)
-    setOpen(false)
+  const toggle = (next: string) => {
+    onValuesChange(
+      values.includes(next) ? values.filter((name) => name !== next) : [...values, next]
+    )
+  }
+
+  const triggerLabel =
+    values.length === 0
+      ? "All assets"
+      : values.length === 1
+        ? values[0]
+        : `Multiple selected (${values.length})`
+
+  const triggerChildren = (
+    <>
+      <Building2 className="size-4 shrink-0" aria-hidden="true" />
+      {!collapsed && (
+        <>
+          <span className="min-w-0 flex-1 truncate font-medium leading-snug">{triggerLabel}</span>
+          <ChevronDown
+            className="size-4 shrink-0 opacity-60 transition-transform duration-200 in-data-popup-open:rotate-180"
+            aria-hidden="true"
+          />
+        </>
+      )}
+    </>
+  )
+
+  const triggerClassName = cn(
+    "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg bg-sidebar-accent px-2 py-4 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
+    "ring-1 ring-sidebar-border hover:brightness-125 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
+    collapsed && "min-h-0 justify-center"
+  )
+
+  const commandContent = (
+    <Command>
+      <CommandInput placeholder="Search properties..." />
+      <CommandList className="min-h-0 flex-1 pt-2 md:max-h-80 md:flex-none">
+        <CommandEmpty>No properties found.</CommandEmpty>
+
+        <CommandGroup>
+          <CommandItem
+            value="All assets"
+            onSelect={() => toggle("All assets")}
+            data-checked={values.includes("All assets") ? "true" : undefined}
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
+              <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
+            </span>
+            <span className="font-medium">All assets</span>
+          </CommandItem>
+        </CommandGroup>
+
+        <CommandGroup heading="Portfolios">
+          {portfolios.map((portfolio) => (
+            <CommandItem
+              key={portfolio.name}
+              value={portfolio.name}
+              onSelect={() => toggle(portfolio.name)}
+              data-checked={values.includes(portfolio.name) ? "true" : undefined}
+            >
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
+                <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate font-medium">{portfolio.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {portfolio.propertyCount} properties
+                </span>
+              </span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+
+        <CommandGroup heading="Properties">
+          {properties.map((property) => (
+            <CommandItem
+              key={property.name}
+              value={`${property.name} ${property.address}`}
+              onSelect={() => toggle(property.name)}
+              data-checked={values.includes(property.name) ? "true" : undefined}
+            >
+              <Building2 className="size-4 shrink-0 opacity-70" aria-hidden="true" />
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate font-medium">{property.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {property.address}
+                </span>
+              </span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  )
+
+  if (isMobile) {
+    return (
+      <MobileFullPage
+        trigger={
+          <Button
+            type="button"
+            variant="ghost"
+            aria-label={`Switch properties — currently ${triggerLabel}`}
+            className={triggerClassName}
+          >
+            {triggerChildren}
+          </Button>
+        }
+        open={open}
+        onOpenChange={setOpen}
+        style={SIDEBAR_SURFACE_VARS}
+        className="**:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
+      >
+        <div className="flex shrink-0 items-center justify-end border-b border-sidebar-border p-4">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Close property switcher"
+            onClick={() => setOpen(false)}
+            className="-mr-1 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+        <div className="flex min-h-0 flex-1 flex-col">{commandContent}</div>
+      </MobileFullPage>
+    )
   }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        render={
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label={`Switch property — currently ${value}`}
-            className={cn(
-              "flex h-auto min-h-12 w-full items-center justify-start gap-2 rounded-lg bg-sidebar-accent px-2 py-4 text-left text-sm font-normal text-sidebar-foreground ring-sidebar-ring transition-colors",
-              "ring-1 ring-sidebar-border hover:brightness-125 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-expanded:text-sidebar-foreground data-popup-open:text-sidebar-foreground",
-              collapsed && "min-h-0 justify-center"
-            )}
-          />
-        }
-      >
-        <Building2 className="size-4 shrink-0" aria-hidden="true" />
-        {!collapsed && (
-          <>
-            <span className="min-w-0 flex-1 font-medium leading-snug">{value}</span>
-            <ChevronDown
-              className="size-4 shrink-0 opacity-60 transition-transform duration-200 in-data-popup-open:rotate-180"
-              aria-hidden="true"
-            />
-          </>
-        )}
+      <PopoverTrigger render={<Button type="button" variant="ghost" aria-label={`Switch properties — currently ${triggerLabel}`} className={triggerClassName} />}>
+        {triggerChildren}
       </PopoverTrigger>
 
       <PopoverContent
@@ -255,59 +360,7 @@ function PropertySwitcher({
         className="w-[309px] p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
         style={SIDEBAR_SURFACE_VARS}
       >
-        <Command>
-          <CommandInput placeholder="Search properties..." />
-          <CommandList className="max-h-80 pt-2">
-            <CommandEmpty>No properties found.</CommandEmpty>
-
-            <CommandGroup>
-              <CommandItem value="All assets" onSelect={() => select("All assets")}>
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
-                  <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
-                </span>
-                <span className="font-medium">All assets</span>
-              </CommandItem>
-            </CommandGroup>
-
-            <CommandGroup heading="Portfolios">
-              {portfolios.map((portfolio) => (
-                <CommandItem
-                  key={portfolio.name}
-                  value={portfolio.name}
-                  onSelect={() => select(portfolio.name)}
-                >
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
-                    <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
-                  </span>
-                  <span className="flex min-w-0 flex-col">
-                    <span className="truncate font-medium">{portfolio.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {portfolio.propertyCount} properties
-                    </span>
-                  </span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-
-            <CommandGroup heading="Properties">
-              {properties.map((property) => (
-                <CommandItem
-                  key={property.name}
-                  value={`${property.name} ${property.address}`}
-                  onSelect={() => select(property.name)}
-                >
-                  <Building2 className="size-4 shrink-0 opacity-70" aria-hidden="true" />
-                  <span className="flex min-w-0 flex-col">
-                    <span className="truncate font-medium">{property.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {property.address}
-                    </span>
-                  </span>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
+        {commandContent}
       </PopoverContent>
     </Popover>
   )
@@ -514,8 +567,8 @@ export interface AppSidebarProps {
   /** Label of the nav item rendered as active. */
   activeItem?: string
   onActiveItemChange?: (label: string) => void
-  property?: string
-  onPropertyChange?: (property: string) => void
+  selectedProperties?: string[]
+  onSelectedPropertiesChange?: (properties: string[]) => void
   /**
    * `icon` keeps the collapsed rail (the real app shell). `none` renders a
    * static, non-fixed sidebar — use it to embed the shell inside a page.
@@ -537,8 +590,8 @@ export function AppSidebar({
   properties = VTS_PROPERTIES,
   activeItem,
   onActiveItemChange,
-  property,
-  onPropertyChange,
+  selectedProperties,
+  onSelectedPropertiesChange,
   collapsible = "icon",
   variant = "sidebar",
   className,
@@ -546,24 +599,25 @@ export function AppSidebar({
   const [internalActive, setInternalActive] = React.useState(
     activeItem ?? items[0]?.label ?? ""
   )
-  const [internalProperty, setInternalProperty] = React.useState(
-    property ?? "200 Berkeley Street"
+  const [internalSelectedProperties, setInternalSelectedProperties] = React.useState<string[]>(
+    selectedProperties ?? ["200 Berkeley Street"]
   )
 
   const active = activeItem ?? internalActive
-  const currentProperty = property ?? internalProperty
+  const currentSelectedProperties = selectedProperties ?? internalSelectedProperties
+
+  const { toggleSidebar, state, isMobile, setOpenMobile } = useSidebar()
 
   const handleActivate = (label: string) => {
+    if (isMobile) setOpenMobile(false)
     if (onActiveItemChange) onActiveItemChange(label)
     else setInternalActive(label)
   }
 
-  const handlePropertyChange = (next: string) => {
-    if (onPropertyChange) onPropertyChange(next)
-    else setInternalProperty(next)
+  const handleSelectedPropertiesChange = (next: string[]) => {
+    if (onSelectedPropertiesChange) onSelectedPropertiesChange(next)
+    else setInternalSelectedProperties(next)
   }
-
-  const { toggleSidebar, state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
 
   return (
@@ -600,8 +654,8 @@ export function AppSidebar({
         )}
 
         <PropertySwitcher
-          value={currentProperty}
-          onValueChange={handlePropertyChange}
+          values={currentSelectedProperties}
+          onValuesChange={handleSelectedPropertiesChange}
           portfolios={portfolios}
           properties={properties}
         />

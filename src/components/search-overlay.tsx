@@ -190,26 +190,37 @@ export function SearchOverlay({
         className="fixed inset-0 z-40 bg-black/10 transition-opacity duration-150 supports-backdrop-filter:backdrop-blur-xs"
         onClick={close}
       />
-      <Card className="absolute top-36 left-1/2 z-50 max-h-[32rem] w-[437px] -translate-x-1/2 gap-4 border border-border p-0 py-4 ring-0 shadow-md">
-        <InputGroup className="h-auto border-0 px-4 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
-          <InputGroupAddon className="pl-0">
-            <Search className="size-4" />
-          </InputGroupAddon>
-          <InputGroupInput
-            autoFocus
-            placeholder="Search for anything"
-            className="text-base font-medium"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          {hasQuery && (
-            <InputGroupAddon align="inline-end">
-              <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setQuery("")}>
-                <X className="size-4" />
-              </InputGroupButton>
+      <Card className="fixed inset-0 z-50 flex max-h-none w-full max-w-none translate-x-0 flex-col gap-4 rounded-none border-0 p-0 py-4 ring-0 shadow-none md:absolute md:inset-auto md:top-36 md:left-1/2 md:h-auto md:max-h-[32rem] md:w-[437px] md:max-w-[437px] md:-translate-x-1/2 md:rounded-xl md:border md:border-border md:shadow-md">
+        <div className="flex items-center gap-1">
+          <InputGroup className="h-auto min-w-0 flex-1 border-0 px-4 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
+            <InputGroupAddon className="pl-0">
+              <Search className="size-4" />
             </InputGroupAddon>
-          )}
-        </InputGroup>
+            <InputGroupInput
+              autoFocus
+              placeholder="Search for anything"
+              className="text-base font-medium"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            {hasQuery && (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setQuery("")}>
+                  <X className="size-4" />
+                </InputGroupButton>
+              </InputGroupAddon>
+            )}
+          </InputGroup>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label="Close search"
+            onClick={close}
+            className="mr-2 shrink-0 md:hidden"
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
 
         <div className="h-px w-full bg-border" />
 
@@ -227,7 +238,7 @@ export function SearchOverlay({
         </div>
 
         {hasQuery && (
-          <div className="h-80 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] md:h-80 md:flex-none [&::-webkit-scrollbar]:hidden">
             <div className="flex flex-col gap-4">
               {!hasResults && (
                 <p className="px-4 text-sm text-muted-foreground">No results for "{query}"</p>

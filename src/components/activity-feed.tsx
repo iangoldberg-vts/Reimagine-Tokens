@@ -6,10 +6,13 @@ import {
   MessageSquare,
   Paperclip,
   Shrink,
+  X,
 } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { MobileFullPage } from "@/components/mobile-full-page"
 import {
   InputGroup,
   InputGroupAddon,
@@ -263,6 +266,7 @@ interface ActivityFeedProps {
 }
 
 export function ActivityFeed({ trigger, open: openProp, onOpenChange }: ActivityFeedProps) {
+  const isMobile = useIsMobile()
   const [internalOpen, setInternalOpen] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const open = openProp ?? internalOpen
@@ -273,46 +277,73 @@ export function ActivityFeed({ trigger, open: openProp, onOpenChange }: Activity
     if (!next) setExpanded(false)
   }
 
+  function renderHeader(onClose?: () => void) {
+    return (
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border p-4">
+        <p className="font-semibold text-foreground">Activity feed</p>
+        <div className="flex items-center gap-2">
+          <Button variant="link" size="sm" className="h-auto p-0">
+            Mark all as read
+          </Button>
+          {onClose && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Close activity feed"
+              onClick={onClose}
+              className="-mr-1"
+            >
+              <X className="size-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  const compactContent = (
+    <>
+      {renderHeader()}
+      <ActivityFeedBody />
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Expand activity feed"
+        onClick={() => setExpanded(true)}
+        className="absolute right-2 bottom-2"
+      >
+        <Expand className="size-4" />
+      </Button>
+    </>
+  )
+
   return (
     <>
-      <Popover open={open && !expanded} onOpenChange={setOpen}>
-        <PopoverTrigger render={trigger} />
-        <PopoverContent
-          side="top"
-          align="start"
-          sideOffset={8}
-          className="relative flex h-[32rem] w-96 flex-col gap-0 overflow-hidden p-0 data-closed:hidden"
-        >
-          <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border p-4">
-            <p className="font-semibold text-foreground">Activity feed</p>
-            <Button variant="link" size="sm" className="h-auto p-0">
-              Mark all as read
-            </Button>
-          </div>
+      {isMobile ? (
+        <MobileFullPage trigger={trigger} open={open} onOpenChange={setOpen}>
+          {renderHeader(() => setOpen(false))}
           <ActivityFeedBody />
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Expand activity feed"
-            onClick={() => setExpanded(true)}
-            className="absolute right-2 bottom-2"
+        </MobileFullPage>
+      ) : (
+        <Popover open={open && !expanded} onOpenChange={setOpen}>
+          <PopoverTrigger render={trigger} />
+          <PopoverContent
+            side="top"
+            align="start"
+            sideOffset={8}
+            className="relative flex h-[32rem] w-96 flex-col gap-0 overflow-hidden p-0 data-closed:hidden"
           >
-            <Expand className="size-4" />
-          </Button>
-        </PopoverContent>
-      </Popover>
+            {compactContent}
+          </PopoverContent>
+        </Popover>
+      )}
 
       <Dialog open={open && expanded} onOpenChange={setOpen}>
         <DialogContent
           showCloseButton={false}
           className="flex h-[43.5rem] w-[644px] max-w-[calc(100%-2rem)] flex-col gap-0 p-0 sm:max-w-none"
         >
-          <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border p-4">
-            <p className="font-semibold text-foreground">Activity feed</p>
-            <Button variant="link" size="sm" className="h-auto p-0">
-              Mark all as read
-            </Button>
-          </div>
+          {renderHeader()}
           <ActivityFeedBody />
           <Button
             variant="ghost"

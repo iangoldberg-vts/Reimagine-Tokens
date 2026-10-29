@@ -48,8 +48,11 @@ export function ChatPanel() {
   const [message, setMessage] = useState("")
 
   return (
-    <div className="fixed inset-y-0 right-0 z-30 w-[347px] py-4 pr-4 pl-2">
-      <Card className="flex size-full flex-col gap-0 border border-border p-0 ring-0 shadow-sm">
+    <div className="fixed inset-x-0 top-10 bottom-0 z-30 md:inset-x-auto md:top-0 md:right-0 md:w-[347px] md:py-4 md:pr-4 md:pl-2">
+      <Card className="flex size-full flex-col gap-0 rounded-b-none border border-border p-0 ring-0 shadow-sm md:rounded-b-xl">
+        <div className="flex shrink-0 justify-center pt-2 md:hidden">
+          <span className="h-1.5 w-10 rounded-full bg-muted" aria-hidden="true" />
+        </div>
         <div className="flex h-14 shrink-0 items-center px-4">
           <p className="text-sm font-semibold text-foreground">VTS AI</p>
         </div>

@@ -17,7 +17,7 @@ export function BlocksForEngineeringPage() {
           if (label === "Search") setSearchOpen(true)
         }}
       >
-        <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-[347px]" : "pr-6"}`}>
+        <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-6 md:pr-[347px]" : "pr-6"}`}>
           <div className="flex items-center gap-3">
             <PageHeader
               eyebrow="Built 1947 · 36 floors · Office"
