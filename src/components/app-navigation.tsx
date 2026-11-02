@@ -783,7 +783,7 @@ export function AppSidebar({
     >
       {/* pb-4 + SidebarGroup's own pt-2 gives a 24px gap below the switcher. */}
       <SidebarHeader className="relative gap-2 p-2 pb-4">
-        <div className="flex h-10 items-center justify-center">
+        <div className={cn("flex h-10 items-center", collapsed ? "justify-center" : "justify-start pl-2")}>
           <VtsLogo markOnly={collapsed} className="text-sidebar-foreground" />
         </div>
 
