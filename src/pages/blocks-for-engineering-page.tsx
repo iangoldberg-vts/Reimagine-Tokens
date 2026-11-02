@@ -12,7 +12,7 @@ export function BlocksForEngineeringPage() {
     <div className="min-h-svh bg-background">
       <AppNavigation
         activeItem="Overview"
-        variant="inset"
+        variant="sidebar"
         onActiveItemChange={(label) => {
           if (label === "Search") setSearchOpen(true)
         }}
