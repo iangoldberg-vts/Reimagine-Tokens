@@ -33,13 +33,14 @@ export function AiChatTriggerButton({
   return (
     <Button
       type="button"
-      size="icon-sm"
+      variant="outline"
+      size="sm"
       aria-label={active ? "Close VTS AI chat" : "Open VTS AI chat"}
       aria-pressed={active}
       onClick={onClick}
-      className={active ? undefined : "bg-muted text-primary hover:bg-muted/80"}
     >
-      <Sparkles className="size-4" />
+      <Sparkles data-icon="inline-start" className="size-4" />
+      Ask VTS
     </Button>
   )
 }

@@ -1,8 +1,10 @@
 import { useState } from "react"
+import { Search } from "lucide-react"
 import { AppNavigation } from "@/components/app-navigation"
 import { AiChatTriggerButton, ChatPanel } from "@/components/chat-panel"
 import { PageHeader } from "@/components/page-header"
 import { SearchOverlay } from "@/components/search-overlay"
+import { Button } from "@/components/ui/button"
 
 export function BlocksForEngineeringPage() {
   const [searchOpen, setSearchOpen] = useState(false)
@@ -10,22 +12,27 @@ export function BlocksForEngineeringPage() {
 
   return (
     <div className="min-h-svh bg-background">
-      <AppNavigation
-        activeItem="Overview"
-        variant="sidebar"
-        onActiveItemChange={(label) => {
-          if (label === "Search") setSearchOpen(true)
-        }}
-      >
+      <AppNavigation activeItem="Overview" variant="sidebar">
         <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-6 md:pr-[347px]" : "pr-6"}`}>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
             <PageHeader
               eyebrow="Built 1947 · 36 floors · Office"
               title="200 Berkeley Street"
               pageName="Overview"
               subtitle="200 Berkeley St, Boston, MA 02116"
             />
-            <AiChatTriggerButton active={chatOpen} onClick={() => setChatOpen((value) => !value)} />
+            <div className="flex shrink-0 items-center gap-2">
+              <AiChatTriggerButton active={chatOpen} onClick={() => setChatOpen((value) => !value)} />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label="Search"
+                onClick={() => setSearchOpen(true)}
+              >
+                <Search className="size-4" />
+              </Button>
+            </div>
           </div>
 
           <SearchOverlay open={searchOpen} onOpenChange={setSearchOpen} />

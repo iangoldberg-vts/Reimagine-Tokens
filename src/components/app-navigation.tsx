@@ -22,7 +22,6 @@ import {
   Menu,
   Plus,
   Scale,
-  Search,
   ShieldCheck,
   Sparkle,
   UsersRound,
@@ -164,7 +163,6 @@ export const VTS_NAV_ITEMS: AppNavItem[] = [
 ]
 
 export const VTS_NAV_FOOTER_ITEMS: AppNavItem[] = [
-  { label: "Search", icon: Search, href: "#" },
   { label: "Activity feed", icon: Activity, href: "#" },
   { label: "Reminders", icon: Bell, href: "#" },
   { label: "Profile", icon: CircleUser, href: "#" },
