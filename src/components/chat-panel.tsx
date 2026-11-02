@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowUp, Layers, Mic, Paperclip, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -33,11 +33,12 @@ export function AiChatTriggerButton({
   return (
     <Button
       type="button"
-      variant="outline"
+      variant={active ? "default" : "outline"}
       size="sm"
       aria-label={active ? "Close VTS AI chat" : "Open VTS AI chat"}
       aria-pressed={active}
       onClick={onClick}
+      data-ai-chat-trigger
     >
       <Sparkles data-icon="inline-start" className="size-4" />
       Ask VTS
@@ -45,11 +46,26 @@ export function AiChatTriggerButton({
   )
 }
 
-export function ChatPanel() {
+export function ChatPanel({ onClose }: { onClose: () => void }) {
   const [message, setMessage] = useState("")
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      const target = event.target as Node
+      if (panelRef.current?.contains(target)) return
+      if ((target as Element).closest?.("[data-ai-chat-trigger]")) return
+      onClose()
+    }
+    document.addEventListener("pointerdown", handlePointerDown)
+    return () => document.removeEventListener("pointerdown", handlePointerDown)
+  }, [onClose])
 
   return (
-    <div className="fixed inset-x-0 top-10 bottom-0 z-30 md:inset-x-auto md:top-0 md:right-0 md:w-[347px] md:py-4 md:pr-4 md:pl-2">
+    <div
+      ref={panelRef}
+      className="fixed inset-x-0 top-10 bottom-0 z-30 md:inset-x-auto md:top-0 md:right-0 md:w-[347px] md:py-4 md:pr-4 md:pl-2"
+    >
       <Card className="flex size-full flex-col gap-0 rounded-b-none border border-border p-0 ring-0 shadow-sm md:rounded-b-xl">
         <div className="flex shrink-0 justify-center pt-2 md:hidden">
           <span className="h-1.5 w-10 rounded-full bg-muted" aria-hidden="true" />

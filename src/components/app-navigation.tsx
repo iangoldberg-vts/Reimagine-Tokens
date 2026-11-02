@@ -56,12 +56,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Switch } from "@/components/ui/switch"
 import {
   Sidebar,
   SidebarContent,
@@ -307,6 +309,7 @@ function PropertySwitcher({
 }: PropertySwitcherProps) {
   const [open, setOpen] = React.useState(false)
   const [creatingPortfolio, setCreatingPortfolio] = React.useState(false)
+  const [multiSelect, setMultiSelect] = React.useState(false)
   const { state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
 
@@ -318,6 +321,22 @@ function PropertySwitcher({
     onValuesChange(
       values.includes(next) ? values.filter((name) => name !== next) : [...values, next]
     )
+  }
+
+  const selectProperty = (name: string) => {
+    if (multiSelect) {
+      toggle(name)
+      return
+    }
+    onValuesChange([name])
+    setOpen(false)
+  }
+
+  // Portfolios are always a single selection — picking one already implies
+  // every property in it, so stacking portfolios together doesn't make sense.
+  const selectPortfolio = (name: string) => {
+    onValuesChange([name])
+    setOpen(false)
   }
 
   const handleOpenChange = (next: boolean) => {
@@ -398,7 +417,7 @@ function PropertySwitcher({
             <CommandItem
               key={portfolio.name}
               value={portfolio.name}
-              onSelect={() => toggle(portfolio.name)}
+              onSelect={() => selectPortfolio(portfolio.name)}
               data-checked={values.includes(portfolio.name) ? "true" : undefined}
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
@@ -414,12 +433,22 @@ function PropertySwitcher({
           ))}
         </CommandGroup>
 
-        <CommandGroup heading="Properties">
+        <CommandGroup
+          heading={
+            <div className="flex items-center justify-between">
+              <span>Assets</span>
+              <FieldLabel className="w-fit gap-1.5 text-xs font-normal normal-case tracking-normal text-muted-foreground">
+                Multi-select
+                <Switch size="sm" checked={multiSelect} onCheckedChange={setMultiSelect} />
+              </FieldLabel>
+            </div>
+          }
+        >
           {properties.map((property) => (
             <CommandItem
               key={property.name}
               value={`${property.name} ${property.address}`}
-              onSelect={() => toggle(property.name)}
+              onSelect={() => selectProperty(property.name)}
               data-checked={values.includes(property.name) ? "true" : undefined}
             >
               <Building2 className="size-4 shrink-0 opacity-70" aria-hidden="true" />
@@ -710,6 +739,8 @@ export interface AppSidebarProps {
   onActiveItemChange?: (label: string) => void
   selectedProperties?: string[]
   onSelectedPropertiesChange?: (properties: string[]) => void
+  /** Called when a portfolio is created via the property switcher's "+". */
+  onPortfoliosChange?: (portfolios: AppNavPortfolio[]) => void
   /**
    * `icon` keeps the collapsed rail (the real app shell). `none` renders a
    * static, non-fixed sidebar — use it to embed the shell inside a page.
@@ -727,7 +758,8 @@ export interface AppSidebarProps {
 export function AppSidebar({
   items = VTS_NAV_ITEMS,
   footerItems = VTS_NAV_FOOTER_ITEMS,
-  portfolios = VTS_PORTFOLIOS,
+  portfolios,
+  onPortfoliosChange,
   properties = VTS_PROPERTIES,
   activeItem,
   onActiveItemChange,
@@ -743,10 +775,20 @@ export function AppSidebar({
   const [internalSelectedProperties, setInternalSelectedProperties] = React.useState<string[]>(
     selectedProperties ?? ["200 Berkeley Street"]
   )
-  const [portfolioList, setPortfolioList] = React.useState<AppNavPortfolio[]>(portfolios)
+  const [internalPortfolioList, setInternalPortfolioList] = React.useState<AppNavPortfolio[]>(
+    portfolios ?? VTS_PORTFOLIOS
+  )
+  const [dark, setDark] = React.useState(
+    () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  )
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark)
+  }, [dark])
 
   const active = activeItem ?? internalActive
   const currentSelectedProperties = selectedProperties ?? internalSelectedProperties
+  const currentPortfolios = portfolios ?? internalPortfolioList
 
   const { toggleSidebar, state, isMobile, setOpenMobile } = useSidebar()
 
@@ -762,10 +804,12 @@ export function AppSidebar({
   }
 
   const handleCreatePortfolio = (name: string, propertyNames: string[]) => {
-    setPortfolioList((current) => [
-      ...current,
+    const next = [
+      ...currentPortfolios,
       { name, propertyCount: propertyNames.length, properties: propertyNames },
-    ])
+    ]
+    if (onPortfoliosChange) onPortfoliosChange(next)
+    else setInternalPortfolioList(next)
   }
   const collapsed = state === "collapsed" && !isMobile
 
@@ -781,9 +825,17 @@ export function AppSidebar({
     >
       {/* pb-4 + SidebarGroup's own pt-2 gives a 24px gap below the switcher. */}
       <SidebarHeader className="relative gap-2 p-2 pb-4">
-        <div className={cn("flex h-10 items-center", collapsed ? "justify-center" : "justify-start pl-2")}>
+        <button
+          type="button"
+          onClick={() => setDark((value) => !value)}
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+          className={cn(
+            "flex h-10 items-center rounded-md transition-opacity hover:opacity-80",
+            collapsed ? "justify-center" : "justify-start pl-2"
+          )}
+        >
           <VtsLogo markOnly={collapsed} className="text-sidebar-foreground" />
-        </div>
+        </button>
 
         {collapsible !== "none" && (
           <Button
@@ -805,7 +857,7 @@ export function AppSidebar({
         <PropertySwitcher
           values={currentSelectedProperties}
           onValuesChange={handleSelectedPropertiesChange}
-          portfolios={portfolioList}
+          portfolios={currentPortfolios}
           properties={properties}
           onCreatePortfolio={handleCreatePortfolio}
         />

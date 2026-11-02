@@ -1,5 +1,8 @@
 import { Image as ImageIcon, type LucideIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
 interface PageHeaderProps {
   title: string
@@ -7,14 +10,20 @@ interface PageHeaderProps {
   pageName?: string
   /** Small caption line above the title. */
   eyebrow?: string
-  /** Line below the title — an address, description, etc. */
+  /** Line below the title — an address, description, etc. Ignored when `badge` is set. */
   subtitle?: string
+  /** A pill rendered in place of the subtitle — e.g. an asset count for a portfolio. */
+  badge?: string
+  /** When set alongside `badge`, the pill becomes clickable and lists these in a popover. */
+  badgeItems?: string[]
   /** "simple" drops the logo — just the eyebrow, title, and subtitle. */
   variant?: "default" | "simple"
   /** Fallback icon shown when logoSrc isn't provided (default variant only). */
   icon?: LucideIcon
   /** An actual logo or photo — falls back to a plain placeholder circle when omitted. */
   logoSrc?: string
+  /** "square" shows a rounded square instead of the default circle — used for portfolios. */
+  logoShape?: "circle" | "square"
   className?: string
 }
 
@@ -23,9 +32,12 @@ export function PageHeader({
   pageName,
   eyebrow,
   subtitle,
+  badge,
+  badgeItems,
   variant = "default",
   icon: Icon,
   logoSrc,
+  logoShape = "circle",
   className,
 }: PageHeaderProps) {
   const titleLine = (
@@ -47,12 +59,16 @@ export function PageHeader({
     )
   }
 
+  const squareLogo = logoShape === "square"
+
   return (
     <div className={className}>
       <div className="flex items-start gap-4">
-        <Avatar className="size-20">
-          {logoSrc && <AvatarImage src={logoSrc} alt={title} />}
-          <AvatarFallback className="bg-muted">
+        <Avatar className={cn("size-20", squareLogo && "rounded-xl after:rounded-xl")}>
+          {logoSrc && (
+            <AvatarImage src={logoSrc} alt={title} className={cn(squareLogo && "rounded-xl")} />
+          )}
+          <AvatarFallback className={cn("bg-muted", squareLogo && "rounded-xl")}>
             {Icon ? (
               <Icon className="size-8 text-muted-foreground" />
             ) : (
@@ -63,7 +79,43 @@ export function PageHeader({
         <div className="flex flex-col gap-1">
           {eyebrow && <p className="text-sm text-muted-foreground">{eyebrow}</p>}
           {titleLine}
-          {subtitle && <p className="text-sm text-foreground">{subtitle}</p>}
+          {badge ? (
+            badgeItems && badgeItems.length > 0 ? (
+              <Popover>
+                <PopoverTrigger
+                  render={
+                    <Badge
+                      variant="secondary"
+                      className="mt-1 h-6 w-fit cursor-pointer bg-accent px-2.5 text-sm text-primary hover:bg-accent/80"
+                    />
+                  }
+                >
+                  {badge}
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-56 p-1">
+                  <div className="flex flex-col">
+                    {badgeItems.map((item) => (
+                      <p
+                        key={item}
+                        className="truncate rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-muted"
+                      >
+                        {item}
+                      </p>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Badge
+                variant="secondary"
+                className="mt-1 h-6 w-fit bg-accent px-2.5 text-sm text-primary"
+              >
+                {badge}
+              </Badge>
+            )
+          ) : (
+            subtitle && <p className="text-sm text-foreground">{subtitle}</p>
+          )}
         </div>
       </div>
     </div>
