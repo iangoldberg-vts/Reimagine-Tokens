@@ -20,6 +20,7 @@ import {
   LayoutGrid,
   ListChecks,
   Menu,
+  Plus,
   Scale,
   Search,
   ShieldCheck,
@@ -56,6 +57,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -113,6 +115,8 @@ export interface AppNavProperty {
 export interface AppNavPortfolio {
   name: string
   propertyCount: number
+  /** Property names in this portfolio. Only set for portfolios created in the UI. */
+  properties?: string[]
 }
 
 /* ── Default VTS data ───────────────────────────────────────────────────── */
@@ -198,6 +202,94 @@ const SIDEBAR_SURFACE_VARS = {
   "--ring": "var(--sidebar-ring)",
 } as React.CSSProperties
 
+/* ── Create portfolio ──────────────────────────────────────────────────── */
+
+function CreatePortfolioView({
+  properties,
+  onCancel,
+  onCreate,
+}: {
+  properties: AppNavProperty[]
+  onCancel: () => void
+  onCreate: (name: string, propertyNames: string[]) => void
+}) {
+  const [name, setName] = React.useState("")
+  const [selected, setSelected] = React.useState<string[]>([])
+
+  const toggle = (propertyName: string) => {
+    setSelected((current) =>
+      current.includes(propertyName)
+        ? current.filter((existing) => existing !== propertyName)
+        : [...current, propertyName]
+    )
+  }
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex shrink-0 items-center gap-2 border-b border-sidebar-border p-4">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label="Back to properties"
+          onClick={onCancel}
+          className="-ml-1 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+        >
+          <ChevronLeft className="size-4" />
+        </Button>
+        <p className="font-semibold text-sidebar-foreground">New portfolio</p>
+      </div>
+
+      <div className="flex shrink-0 flex-col gap-1.5 p-4">
+        <label htmlFor="new-portfolio-name" className="text-xs font-medium text-muted-foreground">
+          Portfolio name
+        </label>
+        <Input
+          id="new-portfolio-name"
+          autoFocus
+          placeholder="e.g. Northeast Corridor"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
+      </div>
+
+      <Command className="min-h-0 flex-1">
+        <CommandInput placeholder="Search assets..." />
+        <CommandList className="min-h-0 flex-1 pt-2 md:max-h-72 md:flex-none">
+          <CommandEmpty>No properties found.</CommandEmpty>
+          <CommandGroup heading="Assets">
+            {properties.map((property) => (
+              <CommandItem
+                key={property.name}
+                value={`${property.name} ${property.address}`}
+                onSelect={() => toggle(property.name)}
+                data-checked={selected.includes(property.name) ? "true" : undefined}
+              >
+                <Building2 className="size-4 shrink-0 opacity-70" aria-hidden="true" />
+                <span className="flex min-w-0 flex-col">
+                  <span className="truncate font-medium">{property.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {property.address}
+                  </span>
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+
+      <div className="shrink-0 border-t border-sidebar-border p-4">
+        <Button
+          className="w-full"
+          disabled={name.trim().length === 0}
+          onClick={() => onCreate(name.trim(), selected)}
+        >
+          Create portfolio{selected.length > 0 ? ` (${selected.length})` : ""}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 /* ── Property switcher ──────────────────────────────────────────────────── */
 
 interface PropertySwitcherProps {
@@ -205,6 +297,7 @@ interface PropertySwitcherProps {
   onValuesChange: (values: string[]) => void
   portfolios: AppNavPortfolio[]
   properties: AppNavProperty[]
+  onCreatePortfolio: (name: string, propertyNames: string[]) => void
 }
 
 function PropertySwitcher({
@@ -212,15 +305,31 @@ function PropertySwitcher({
   onValuesChange,
   portfolios,
   properties,
+  onCreatePortfolio,
 }: PropertySwitcherProps) {
   const [open, setOpen] = React.useState(false)
+  const [creatingPortfolio, setCreatingPortfolio] = React.useState(false)
   const { state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
 
   const toggle = (next: string) => {
+    if (next === "All assets") {
+      onValuesChange([])
+      return
+    }
     onValuesChange(
       values.includes(next) ? values.filter((name) => name !== next) : [...values, next]
     )
+  }
+
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (!next) setCreatingPortfolio(false)
+  }
+
+  const handleCreatePortfolio = (name: string, propertyNames: string[]) => {
+    onCreatePortfolio(name, propertyNames)
+    setCreatingPortfolio(false)
   }
 
   const triggerLabel =
@@ -261,7 +370,7 @@ function PropertySwitcher({
           <CommandItem
             value="All assets"
             onSelect={() => toggle("All assets")}
-            data-checked={values.includes("All assets") ? "true" : undefined}
+            data-checked={values.length === 0 ? "true" : undefined}
           >
             <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-accent">
               <Layers className="size-4 text-sidebar-primary" aria-hidden="true" />
@@ -270,7 +379,23 @@ function PropertySwitcher({
           </CommandItem>
         </CommandGroup>
 
-        <CommandGroup heading="Portfolios">
+        <CommandGroup
+          heading={
+            <div className="flex items-center justify-between">
+              <span>Portfolios</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                aria-label="Create portfolio"
+                onClick={() => setCreatingPortfolio(true)}
+                className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              >
+                <Plus className="size-3.5" />
+              </Button>
+            </div>
+          }
+        >
           {portfolios.map((portfolio) => (
             <CommandItem
               key={portfolio.name}
@@ -327,28 +452,38 @@ function PropertySwitcher({
           </Button>
         }
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         style={SIDEBAR_SURFACE_VARS}
         className="**:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
       >
-        <div className="flex shrink-0 items-center justify-end border-b border-sidebar-border p-4">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Close property switcher"
-            onClick={() => setOpen(false)}
-            className="-mr-1 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
-        <div className="flex min-h-0 flex-1 flex-col">{commandContent}</div>
+        {creatingPortfolio ? (
+          <CreatePortfolioView
+            properties={properties}
+            onCancel={() => setCreatingPortfolio(false)}
+            onCreate={handleCreatePortfolio}
+          />
+        ) : (
+          <>
+            <div className="flex shrink-0 items-center justify-end border-b border-sidebar-border p-4">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Close property switcher"
+                onClick={() => setOpen(false)}
+                className="-mr-1 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+            <div className="flex min-h-0 flex-1 flex-col">{commandContent}</div>
+          </>
+        )}
       </MobileFullPage>
     )
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger render={<Button type="button" variant="ghost" aria-label={`Switch properties — currently ${triggerLabel}`} className={triggerClassName} />}>
         {triggerChildren}
       </PopoverTrigger>
@@ -357,10 +492,18 @@ function PropertySwitcher({
         side="bottom"
         align="start"
         sideOffset={8}
-        className="w-[309px] p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
+        className="w-[309px] max-h-[32rem] overflow-hidden p-0 ring-sidebar-border **:[[cmdk-group-heading]]:uppercase **:[[cmdk-group-heading]]:tracking-wider"
         style={SIDEBAR_SURFACE_VARS}
       >
-        {commandContent}
+        {creatingPortfolio ? (
+          <CreatePortfolioView
+            properties={properties}
+            onCancel={() => setCreatingPortfolio(false)}
+            onCreate={handleCreatePortfolio}
+          />
+        ) : (
+          commandContent
+        )}
       </PopoverContent>
     </Popover>
   )
@@ -602,6 +745,7 @@ export function AppSidebar({
   const [internalSelectedProperties, setInternalSelectedProperties] = React.useState<string[]>(
     selectedProperties ?? ["200 Berkeley Street"]
   )
+  const [portfolioList, setPortfolioList] = React.useState<AppNavPortfolio[]>(portfolios)
 
   const active = activeItem ?? internalActive
   const currentSelectedProperties = selectedProperties ?? internalSelectedProperties
@@ -617,6 +761,13 @@ export function AppSidebar({
   const handleSelectedPropertiesChange = (next: string[]) => {
     if (onSelectedPropertiesChange) onSelectedPropertiesChange(next)
     else setInternalSelectedProperties(next)
+  }
+
+  const handleCreatePortfolio = (name: string, propertyNames: string[]) => {
+    setPortfolioList((current) => [
+      ...current,
+      { name, propertyCount: propertyNames.length, properties: propertyNames },
+    ])
   }
   const collapsed = state === "collapsed" && !isMobile
 
@@ -656,8 +807,9 @@ export function AppSidebar({
         <PropertySwitcher
           values={currentSelectedProperties}
           onValuesChange={handleSelectedPropertiesChange}
-          portfolios={portfolios}
+          portfolios={portfolioList}
           properties={properties}
+          onCreatePortfolio={handleCreatePortfolio}
         />
       </SidebarHeader>
 
