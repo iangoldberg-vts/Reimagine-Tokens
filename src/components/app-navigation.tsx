@@ -111,6 +111,8 @@ export type AppNavVariant = "sidebar" | "floating" | "inset"
 export interface AppNavProperty {
   name: string
   address: string
+  /** "Built {year} · {floors} floors · {type}" — shown as the page header eyebrow. */
+  details?: string
 }
 
 export interface AppNavPortfolio {
@@ -177,12 +179,36 @@ export const VTS_PORTFOLIOS: AppNavPortfolio[] = [
 ]
 
 export const VTS_PROPERTIES: AppNavProperty[] = [
-  { name: "VTS Tower Headquarters", address: "114 West 41st Street, New York, NY 10036" },
-  { name: "One Financial Plaza", address: "1 Financial Plaza, Providence, RI 02903" },
-  { name: "Empire State Building", address: "350 5th Ave, New York, NY 10118" },
-  { name: "Salesforce Tower", address: "415 Mission St, San Francisco, CA 94105" },
-  { name: "200 Berkeley Street", address: "200 Berkeley St, Boston, MA 02116" },
-  { name: "Willis Tower", address: "233 S Wacker Dr, Chicago, IL 60606" },
+  {
+    name: "VTS Tower Headquarters",
+    address: "114 West 41st Street, New York, NY 10036",
+    details: "Built 2017 · 52 floors · Office",
+  },
+  {
+    name: "One Financial Plaza",
+    address: "1 Financial Plaza, Providence, RI 02903",
+    details: "Built 1928 · 26 floors · Office",
+  },
+  {
+    name: "Empire State Building",
+    address: "350 5th Ave, New York, NY 10118",
+    details: "Built 1931 · 102 floors · Office",
+  },
+  {
+    name: "Salesforce Tower",
+    address: "415 Mission St, San Francisco, CA 94105",
+    details: "Built 2018 · 61 floors · Office",
+  },
+  {
+    name: "200 Berkeley Street",
+    address: "200 Berkeley St, Boston, MA 02116",
+    details: "Built 1947 · 36 floors · Office",
+  },
+  {
+    name: "Willis Tower",
+    address: "233 S Wacker Dr, Chicago, IL 60606",
+    details: "Built 1973 · 108 floors · Office",
+  },
 ]
 
 /**

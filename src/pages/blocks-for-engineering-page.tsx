@@ -60,7 +60,11 @@ export function BlocksForEngineeringPage() {
         badgeItems: selectedPortfolio.properties,
       }
     : selectedProperty
-      ? { title: selectedProperty.name, subtitle: selectedProperty.address }
+      ? {
+          eyebrow: selectedProperty.details,
+          title: selectedProperty.name,
+          subtitle: selectedProperty.address,
+        }
       : selectedProperties.length === 0
         ? { title: "All assets" }
         : {
