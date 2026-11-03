@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Image as ImageIcon, type LucideIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +17,8 @@ interface PageHeaderProps {
   badge?: string
   /** When set alongside `badge`, the pill becomes clickable and lists these in a popover. */
   badgeItems?: string[]
+  /** Called when an item in the badge popover is clicked. */
+  onBadgeItemClick?: (item: string) => void
   /** "simple" drops the logo — just the eyebrow, title, and subtitle. */
   variant?: "default" | "simple"
   /** Fallback icon shown when logoSrc isn't provided (default variant only). */
@@ -34,12 +37,15 @@ export function PageHeader({
   subtitle,
   badge,
   badgeItems,
+  onBadgeItemClick,
   variant = "default",
   icon: Icon,
   logoSrc,
   logoShape = "circle",
   className,
 }: PageHeaderProps) {
+  const [badgePopoverOpen, setBadgePopoverOpen] = useState(false)
+
   const titleLine = (
     <h1 className="font-heading text-4xl font-bold text-foreground">
       {title}
@@ -81,7 +87,7 @@ export function PageHeader({
           {titleLine}
           {badge ? (
             badgeItems && badgeItems.length > 0 ? (
-              <Popover>
+              <Popover open={badgePopoverOpen} onOpenChange={setBadgePopoverOpen}>
                 <PopoverTrigger
                   render={
                     <Badge
@@ -95,12 +101,17 @@ export function PageHeader({
                 <PopoverContent align="start" className="w-56 p-1">
                   <div className="flex flex-col">
                     {badgeItems.map((item) => (
-                      <p
+                      <button
                         key={item}
-                        className="truncate rounded-md px-2 py-1.5 text-sm text-foreground hover:bg-muted"
+                        type="button"
+                        onClick={() => {
+                          onBadgeItemClick?.(item)
+                          setBadgePopoverOpen(false)
+                        }}
+                        className="truncate rounded-md px-2 py-1.5 text-left text-sm text-foreground hover:bg-muted"
                       >
                         {item}
-                      </p>
+                      </button>
                     ))}
                   </div>
                 </PopoverContent>

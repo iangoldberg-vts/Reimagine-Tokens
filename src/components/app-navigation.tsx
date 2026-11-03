@@ -173,9 +173,27 @@ export const VTS_NAV_FOOTER_ITEMS: AppNavItem[] = [
 ]
 
 export const VTS_PORTFOLIOS: AppNavPortfolio[] = [
-  { name: "Northeast Corridor", propertyCount: 5 },
-  { name: "West Coast Portfolio", propertyCount: 3 },
-  { name: "Midwest Holdings", propertyCount: 3 },
+  {
+    name: "Northeast Corridor",
+    propertyCount: 5,
+    properties: [
+      "VTS Tower Headquarters",
+      "One Financial Plaza",
+      "Empire State Building",
+      "Salesforce Tower",
+      "200 Berkeley Street",
+    ],
+  },
+  {
+    name: "West Coast Portfolio",
+    propertyCount: 3,
+    properties: ["Salesforce Tower", "VTS Tower Headquarters", "Empire State Building"],
+  },
+  {
+    name: "Midwest Holdings",
+    propertyCount: 3,
+    properties: ["Willis Tower", "One Financial Plaza", "200 Berkeley Street"],
+  },
 ]
 
 export const VTS_PROPERTIES: AppNavProperty[] = [

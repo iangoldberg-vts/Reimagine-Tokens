@@ -86,7 +86,11 @@ export function BlocksForEngineeringPage() {
       >
         <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-6 md:pr-[347px]" : "pr-6"}`}>
           <div className="flex items-center justify-between gap-3">
-            <PageHeader {...headerProps} pageName={activeItem} />
+            <PageHeader
+              {...headerProps}
+              pageName={activeItem}
+              onBadgeItemClick={(item) => setSelectedProperties([item])}
+            />
             <div className="flex shrink-0 items-center gap-2">
               <AiChatTriggerButton active={chatOpen} onClick={() => setChatOpen((value) => !value)} />
               <Button
