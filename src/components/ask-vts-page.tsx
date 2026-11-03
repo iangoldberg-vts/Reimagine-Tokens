@@ -51,7 +51,7 @@ export function AskVtsPage() {
               type="button"
               onClick={() => setActiveConversation(conversation.id)}
               className={cn(
-                "truncate rounded-md px-2 py-2 text-left text-sm",
+                "cursor-pointer truncate rounded-md px-2 py-2 text-left text-sm",
                 conversation.id === activeConversation
                   ? "bg-accent font-medium text-accent-foreground"
                   : "text-foreground hover:bg-muted"
@@ -123,7 +123,7 @@ export function AskVtsPage() {
                 key={prompt}
                 type="button"
                 onClick={() => setMessage(prompt)}
-                className="flex flex-col gap-3 rounded-xl border border-border p-4 text-left transition-colors hover:bg-muted/50"
+                className="flex cursor-pointer flex-col gap-3 rounded-xl border border-border p-4 text-left transition-colors hover:bg-muted/50"
               >
                 <span className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
                   <Copy className="size-4 text-primary" />

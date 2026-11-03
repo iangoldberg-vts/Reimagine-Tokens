@@ -907,7 +907,7 @@ export function AppSidebar({
           onClick={() => setDark((value) => !value)}
           aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           className={cn(
-            "flex h-10 items-center rounded-md transition-opacity hover:opacity-80",
+            "flex h-10 cursor-pointer items-center rounded-md transition-opacity hover:opacity-80",
             collapsed ? "justify-center" : "justify-start pl-2"
           )}
         >
