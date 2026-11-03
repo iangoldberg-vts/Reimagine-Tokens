@@ -1,9 +1,11 @@
-import { useEffect, useState, type ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import { Building2, FileText, Search, Users, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 type Category = "Assets" | "Deals" | "Tenants" | "Brokers"
 type Filter = "All" | Category
@@ -150,22 +152,12 @@ export function SearchOverlay({
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<Filter>("All")
 
-  useEffect(() => {
-    if (!open) return
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close()
+  function handleOpenChange(next: boolean) {
+    if (!next) {
+      setQuery("")
+      setFilter("All")
     }
-    window.addEventListener("keydown", onKeyDown)
-    return () => window.removeEventListener("keydown", onKeyDown)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open])
-
-  if (!open) return null
-
-  function close() {
-    onOpenChange(false)
-    setQuery("")
-    setFilter("All")
+    onOpenChange(next)
   }
 
   const showAssets = filter === "All" || filter === "Assets"
@@ -185,12 +177,21 @@ export function SearchOverlay({
     matchedAssets.length > 0 || matchedDeals.length > 0 || matchedTenants.length > 0 || matchedBrokers.length > 0
 
   return (
-    <>
-      <div
-        className="fixed inset-0 z-40 bg-black/10 transition-opacity duration-150 supports-backdrop-filter:backdrop-blur-xs"
-        onClick={close}
-      />
-      <Card className="fixed inset-0 z-50 flex max-h-none w-full max-w-none translate-x-0 flex-col gap-4 rounded-none border-0 p-0 py-4 ring-0 shadow-none md:absolute md:inset-auto md:top-36 md:left-1/2 md:h-auto md:max-h-[32rem] md:w-[437px] md:max-w-[437px] md:-translate-x-1/2 md:rounded-xl md:border md:border-border md:shadow-md">
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent
+        showCloseButton={false}
+        className={cn(
+          "top-0 left-0 flex h-full max-h-none w-full max-w-none translate-x-0 translate-y-0 flex-col gap-4 rounded-none border-0 p-0 py-4 ring-0 md:top-36 md:left-1/2 md:h-auto md:max-h-[32rem] md:w-[437px] md:max-w-[437px] md:-translate-x-1/2 md:rounded-xl md:border md:border-border md:shadow-md",
+          // The entrance transition's data-starting-style attribute doesn't
+          // always clear, leaving the dialog stuck invisible — neutralize
+          // only the *entrance* so it renders at rest regardless. The exit
+          // transition (fade-out-0/zoom-out-95, from DialogContent's own
+          // defaults) must stay: those target hidden, so don't touch them —
+          // overriding them to "100" would target "still fully visible",
+          // leaving the dialog stuck open after it's dismissed.
+          "data-open:fade-in-100 data-open:zoom-in-100"
+        )}
+      >
         <div className="flex items-center gap-1">
           <InputGroup className="h-auto min-w-0 flex-1 border-0 px-4 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
             <InputGroupAddon className="pl-0">
@@ -215,14 +216,14 @@ export function SearchOverlay({
             variant="ghost"
             size="icon-sm"
             aria-label="Close search"
-            onClick={close}
+            onClick={() => handleOpenChange(false)}
             className="mr-2 shrink-0 md:hidden"
           >
             <X className="size-4" />
           </Button>
         </div>
 
-        <div className="h-px w-full bg-border" />
+        <Separator />
 
         <div className="flex flex-wrap items-center gap-2 px-4">
           {FILTERS.map((item) => (
@@ -331,7 +332,7 @@ export function SearchOverlay({
             </div>
           </div>
         )}
-      </Card>
-    </>
+      </DialogContent>
+    </Dialog>
   )
 }

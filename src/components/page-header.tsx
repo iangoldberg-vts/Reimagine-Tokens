@@ -1,8 +1,12 @@
-import { useState } from "react"
 import { Image as ImageIcon, type LucideIcon } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 interface PageHeaderProps {
@@ -44,8 +48,6 @@ export function PageHeader({
   logoShape = "circle",
   className,
 }: PageHeaderProps) {
-  const [badgePopoverOpen, setBadgePopoverOpen] = useState(false)
-
   const titleLine = (
     <h1 className="font-heading text-4xl font-bold text-foreground">
       {title}
@@ -87,8 +89,8 @@ export function PageHeader({
           {titleLine}
           {badge ? (
             badgeItems && badgeItems.length > 0 ? (
-              <Popover open={badgePopoverOpen} onOpenChange={setBadgePopoverOpen}>
-                <PopoverTrigger
+              <DropdownMenu>
+                <DropdownMenuTrigger
                   render={
                     <Badge
                       variant="secondary"
@@ -97,25 +99,15 @@ export function PageHeader({
                   }
                 >
                   {badge}
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-56 p-1">
-                  <div className="flex flex-col">
-                    {badgeItems.map((item) => (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => {
-                          onBadgeItemClick?.(item)
-                          setBadgePopoverOpen(false)
-                        }}
-                        className="truncate rounded-md px-2 py-1.5 text-left text-sm text-foreground hover:bg-muted"
-                      >
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  {badgeItems.map((item) => (
+                    <DropdownMenuItem key={item} onClick={() => onBadgeItemClick?.(item)}>
+                      <span className="truncate">{item}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Badge
                 variant="secondary"

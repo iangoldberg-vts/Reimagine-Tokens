@@ -869,6 +869,11 @@ export function AppSidebar({
     >
       {/* pb-4 + SidebarGroup's own pt-2 gives a 24px gap below the switcher. */}
       <SidebarHeader className="relative gap-2 p-2 pb-4">
+        {/*
+         * A plain button, not shadcn's Button: Button forces bare child svgs
+         * to a fixed icon size (its small-square-icon convention), which
+         * would squash this wide wordmark logo.
+         */}
         <button
           type="button"
           onClick={() => setDark((value) => !value)}
