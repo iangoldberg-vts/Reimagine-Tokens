@@ -204,6 +204,30 @@
     background: linear-gradient(135deg, oklch(0.20 0.05 278) 0%, oklch(0.08 0.002 258) 100%);
 }
 
+/* Scrollbar hidden at rest, revealed while actively scrolling (see
+   useScrollbarReveal in app-navigation.tsx, which toggles .is-scrolling). */
+.scrollbar-overlay {
+    scrollbar-width: none;
+}
+.scrollbar-overlay::-webkit-scrollbar {
+    width: 6px;
+}
+.scrollbar-overlay::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scrollbar-overlay::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    transition: background-color 200ms ease;
+}
+.scrollbar-overlay.is-scrolling {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+.scrollbar-overlay.is-scrolling::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+}
+
 
 @layer base {
     * {

@@ -246,6 +246,26 @@ const SIDEBAR_SURFACE_VARS = {
   "--ring": "var(--sidebar-ring)",
 } as React.CSSProperties
 
+/**
+ * Keeps a scroll container's scrollbar hidden at rest, revealing it only
+ * while the user is actively scrolling (see the `.scrollbar-overlay` rules
+ * in index.css). Spread the returned props onto the scrollable element.
+ */
+function useScrollbarReveal() {
+  const [scrolling, setScrolling] = React.useState(false)
+  const timeoutRef = React.useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  const onScroll = () => {
+    setScrolling(true)
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => setScrolling(false), 800)
+  }
+
+  React.useEffect(() => () => clearTimeout(timeoutRef.current), [])
+
+  return { className: cn("scrollbar-overlay", scrolling && "is-scrolling"), onScroll }
+}
+
 /* ── Create portfolio ──────────────────────────────────────────────────── */
 
 function CreatePortfolioView({
@@ -259,6 +279,7 @@ function CreatePortfolioView({
 }) {
   const [name, setName] = React.useState("")
   const [selected, setSelected] = React.useState<string[]>([])
+  const scrollbarReveal = useScrollbarReveal()
 
   const toggle = (propertyName: string) => {
     setSelected((current) =>
@@ -298,7 +319,10 @@ function CreatePortfolioView({
 
       <Command className="min-h-0 flex-1">
         <CommandInput placeholder="Search assets..." />
-        <CommandList className="min-h-0 flex-1 pt-2 md:max-h-72 md:flex-none">
+        <CommandList
+          onScroll={scrollbarReveal.onScroll}
+          className={cn("min-h-0 flex-1 pt-2 md:max-h-72 md:flex-none", scrollbarReveal.className)}
+        >
           <CommandEmpty>No properties found.</CommandEmpty>
           <CommandGroup heading="Assets">
             {properties.map((property) => (
@@ -354,6 +378,7 @@ function PropertySwitcher({
   const [open, setOpen] = React.useState(false)
   const [creatingPortfolio, setCreatingPortfolio] = React.useState(false)
   const [multiSelect, setMultiSelect] = React.useState(false)
+  const scrollbarReveal = useScrollbarReveal()
   const { state, isMobile } = useSidebar()
   const collapsed = state === "collapsed" && !isMobile
 
@@ -424,7 +449,10 @@ function PropertySwitcher({
   const commandContent = (
     <Command>
       <CommandInput placeholder="Search properties..." />
-      <CommandList className="min-h-0 flex-1 pt-2 md:max-h-80 md:flex-none">
+      <CommandList
+        onScroll={scrollbarReveal.onScroll}
+        className={cn("min-h-0 flex-1 pt-2 md:max-h-80 md:flex-none", scrollbarReveal.className)}
+      >
         <CommandEmpty>No properties found.</CommandEmpty>
 
         <CommandGroup>

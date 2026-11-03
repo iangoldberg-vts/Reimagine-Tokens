@@ -58,7 +58,11 @@ export function BlocksForEngineeringPage() {
           subtitle: selectedProperty.address,
         }
       : selectedProperties.length === 0
-        ? { title: "All assets" }
+        ? {
+            title: "All assets",
+            badge: `${VTS_PROPERTIES.length} Assets`,
+            badgeItems: VTS_PROPERTIES.map((property) => property.name),
+          }
         : {
             title: "Multiple selected",
             badge: `${selectedProperties.length} Assets`,
