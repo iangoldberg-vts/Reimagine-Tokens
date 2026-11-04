@@ -79,6 +79,17 @@ export function FilterMenu({ className }: { className?: string }) {
     const selected = values[field.id] ?? []
     return (
       <>
+        {selected.length > 0 && (
+          <div className="flex justify-end py-1 pr-2 pl-1.5">
+            <button
+              type="button"
+              onClick={() => removeField(field.id)}
+              className="cursor-pointer text-xs font-medium text-primary hover:underline"
+            >
+              Clear
+            </button>
+          </div>
+        )}
         {field.options.map((option) => (
           <DropdownMenuCheckboxItem
             key={option}
