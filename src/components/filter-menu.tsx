@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Bookmark, ChevronDown, ChevronRight, ListFilter, Plus, X } from "lucide-react"
+import { Bookmark, ChevronDown, ChevronRight, CircleCheck, ListFilter, Plus, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Command, CommandItem, CommandList } from "@/components/ui/command"
@@ -125,7 +125,7 @@ export function FilterMenu({ className }: { className?: string }) {
       <Popover>
         <PopoverTrigger render={<FilterTrigger />}>
           <ListFilter className="text-muted-foreground" />
-          All filters
+          {activeFieldIds.length > 0 ? `Filters (${activeFieldIds.length})` : "All filters"}
         </PopoverTrigger>
         <PopoverContent
           align="start"
@@ -134,6 +134,16 @@ export function FilterMenu({ className }: { className?: string }) {
           {/* Field list — popover surface, rounded on the left only. */}
           {/* h-auto overrides Command's own `size-full`, whose height:100% would
               resolve against the auto-height popover and defeat the stretch. */}
+          {/*
+            cmdk always keeps exactly one item marked data-selected for
+            keyboard nav — even controlled to "", it self-corrects back to
+            the first item, and disablePointerSelection only stops *hover*
+            from moving that marker, not the initial one. Rather than fight
+            cmdk's model, cancel data-selected's own background (which
+            command.tsx applies by default) on these items and drive the
+            highlight purely off real CSS hover: and our own `active` state,
+            neither of which cmdk can get stuck or force.
+          */}
           <Command className="h-auto w-[183px] self-stretch rounded-none!" loop>
             <div className="border-b border-border px-2 py-2.5 text-sm text-muted-foreground">
               {FILTER_GROUP_LABEL}
@@ -141,13 +151,25 @@ export function FilterMenu({ className }: { className?: string }) {
             <CommandList className="max-h-none">
               {FILTER_FIELDS.map((field) => {
                 const active = field.id === megaMenuFieldId
+                const hasValues = (values[field.id]?.length ?? 0) > 0
                 return (
                   <CommandItem
                     key={field.id}
                     value={field.label}
                     onSelect={() => setMegaMenuFieldId(field.id)}
-                    className={cn(active && "bg-muted text-foreground")}
+                    className={cn(
+                      "data-selected:bg-transparent data-selected:text-foreground hover:bg-muted",
+                      // data-selected:bg-transparent is an attribute selector, which
+                      // out-specifies the plain .bg-muted below — force this one with
+                      // `!` so the genuinely active field always wins regardless.
+                      active && "bg-muted! text-foreground!"
+                    )}
                   >
+                    {/* command.tsx forces descendant svgs to text-foreground while
+                        cmdk's own data-selected flag is set (see filter-menu's note
+                        above on why that's always true for some item) — force this
+                        one to stay primary regardless. */}
+                    {hasValues && <CircleCheck className="size-4 shrink-0 text-primary!" />}
                     <span className="flex-1 truncate">{field.label}</span>
                     {active && <ChevronRight className="size-4" />}
                   </CommandItem>
@@ -166,6 +188,7 @@ export function FilterMenu({ className }: { className?: string }) {
                     key={option}
                     value={option}
                     onSelect={() => toggleValue(megaMenuField.id, option)}
+                    className="data-selected:bg-transparent data-selected:text-foreground hover:bg-muted"
                   >
                     <Checkbox checked={checked} className="pointer-events-none" />
                     <span className="truncate">{option}</span>
