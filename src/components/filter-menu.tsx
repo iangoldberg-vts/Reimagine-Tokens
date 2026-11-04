@@ -162,7 +162,13 @@ export function FilterMenu({ className }: { className?: string }) {
                       // data-selected:bg-transparent is an attribute selector, which
                       // out-specifies the plain .bg-muted below — force this one with
                       // `!` so the genuinely active field always wins regardless.
-                      active && "bg-muted! text-foreground!"
+                      active && "bg-muted! text-foreground!",
+                      // CommandItem always appends its own trailing checkmark icon
+                      // (for the data-checked convention) after our children — its
+                      // ml-auto was winning the "push to the edge" over our own
+                      // chevron, leaving the chevron stranded mid-row. We don't use
+                      // that convention here, so just drop it from layout.
+                      "[&>svg:last-child]:hidden"
                     )}
                   >
                     {/* command.tsx forces descendant svgs to text-foreground while
@@ -171,7 +177,7 @@ export function FilterMenu({ className }: { className?: string }) {
                         one to stay primary regardless. */}
                     {hasValues && <CircleCheck className="size-4 shrink-0 text-primary!" />}
                     <span className="flex-1 truncate">{field.label}</span>
-                    {active && <ChevronRight className="size-4" />}
+                    {active && <ChevronRight className="ml-auto size-4" />}
                   </CommandItem>
                 )
               })}
