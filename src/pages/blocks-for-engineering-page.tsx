@@ -10,6 +10,7 @@ import {
 } from "@/components/app-navigation"
 import { AskVtsPage } from "@/components/ask-vts-page"
 import { AiChatTriggerButton, ChatPanel } from "@/components/chat-panel"
+import { FilterMenu } from "@/components/filter-menu"
 import { PageHeader } from "@/components/page-header"
 import { SearchOverlay } from "@/components/search-overlay"
 import { Button } from "@/components/ui/button"
@@ -105,6 +106,8 @@ export function BlocksForEngineeringPage() {
                 </Button>
               </div>
             </div>
+
+            <FilterMenu className="mt-4" />
 
             {activeItem !== "Overview" && (
               <div className="flex min-h-[22rem] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border text-center">
