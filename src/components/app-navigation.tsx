@@ -22,6 +22,7 @@ import {
   Menu,
   Plus,
   Scale,
+  Search,
   ShieldCheck,
   Sparkle,
   UsersRound,
@@ -813,6 +814,8 @@ export interface AppSidebarProps {
   onSelectedPropertiesChange?: (properties: string[]) => void
   /** Called when a portfolio is created via the property switcher's "+". */
   onPortfoliosChange?: (portfolios: AppNavPortfolio[]) => void
+  /** Shows a "Search" nav item in the mobile off-canvas menu when set. */
+  onSearchClick?: () => void
   /**
    * `icon` keeps the collapsed rail (the real app shell). `none` renders a
    * static, non-fixed sidebar — use it to embed the shell inside a page.
@@ -837,6 +840,7 @@ export function AppSidebar({
   onActiveItemChange,
   selectedProperties,
   onSelectedPropertiesChange,
+  onSearchClick,
   collapsible = "icon",
   variant = "sidebar",
   className,
@@ -958,6 +962,23 @@ export function AppSidebar({
       <SidebarFooter className="gap-2 p-2">
         <SidebarSeparator className="mx-0" />
         <SidebarMenu className="gap-0.5">
+          {/* Search only has a header icon button on desktop — on mobile that
+              button has no room, so it lives here instead. */}
+          {isMobile && onSearchClick && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                size="sm"
+                className={cn("[&_svg]:size-3.5", NAV_IDLE)}
+                onClick={() => {
+                  setOpenMobile(false)
+                  onSearchClick()
+                }}
+              >
+                <Search aria-hidden="true" />
+                <span>Search</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           {footerItems.map((item) =>
             item.label === "Activity feed" ? (
               <ActivityFeedNavItem key={item.label} item={item} />

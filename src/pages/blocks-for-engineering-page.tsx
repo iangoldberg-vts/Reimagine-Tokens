@@ -79,6 +79,7 @@ export function BlocksForEngineeringPage() {
         onSelectedPropertiesChange={setSelectedProperties}
         portfolios={portfolios}
         onPortfoliosChange={setPortfolios}
+        onSearchClick={() => setSearchOpen(true)}
         variant="floating"
       >
         {activeItem === "Ask VTS" ? (
@@ -87,13 +88,20 @@ export function BlocksForEngineeringPage() {
           </div>
         ) : (
           <div className={`flex flex-col gap-4 pt-8 pb-6 pl-6 ${chatOpen ? "pr-6 md:pr-[347px]" : "pr-6"}`}>
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              {/* Below md the toolbar has no room beside the header, so Ask VTS
+                  stacks above it instead — Search moves into the mobile nav. */}
+              <AiChatTriggerButton
+                active={chatOpen}
+                onClick={() => setChatOpen((value) => !value)}
+                className="ml-24 self-start md:hidden"
+              />
               <PageHeader
                 {...headerProps}
                 pageName={activeItem}
                 onBadgeItemClick={(item) => setSelectedProperties([item])}
               />
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="hidden shrink-0 items-center gap-2 md:flex">
                 <AiChatTriggerButton active={chatOpen} onClick={() => setChatOpen((value) => !value)} />
                 <Button
                   type="button"

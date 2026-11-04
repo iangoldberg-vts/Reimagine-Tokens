@@ -26,9 +26,11 @@ function SuggestionRow({ label, onClick }: { label: string; onClick: () => void 
 export function AiChatTriggerButton({
   active,
   onClick,
+  className,
 }: {
   active: boolean
   onClick: () => void
+  className?: string
 }) {
   return (
     <Button
@@ -39,6 +41,7 @@ export function AiChatTriggerButton({
       aria-pressed={active}
       onClick={onClick}
       data-ai-chat-trigger
+      className={className}
     >
       <Sparkles data-icon="inline-start" className="size-4" />
       Ask VTS
