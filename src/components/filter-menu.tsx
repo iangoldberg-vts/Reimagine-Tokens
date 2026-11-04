@@ -1,5 +1,14 @@
 import { useState } from "react"
-import { Bookmark, ChevronDown, ChevronRight, CircleCheck, ListFilter, Plus, X } from "lucide-react"
+import {
+  ArrowLeft,
+  Bookmark,
+  ChevronDown,
+  ChevronRight,
+  CircleCheck,
+  ListFilter,
+  Plus,
+  X,
+} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -13,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 
 interface FilterField {
@@ -43,9 +53,16 @@ const FILTER_GROUP_LABEL = "Lease"
 
 const SAVED_VIEWS = ["Leases needing attention", "Retail leases"]
 
+/** Shared look for a tappable row inside the mobile sheet's list pages. */
+const MOBILE_ROW =
+  "flex w-full cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent"
+
 export function FilterMenu({ className }: { className?: string }) {
   const [values, setValues] = useState<Record<string, string[]>>({})
   const [megaMenuFieldId, setMegaMenuFieldId] = useState(FILTER_FIELDS[0].id)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileFieldId, setMobileFieldId] = useState<string | null>(null)
+  const [mobileSavedViewsOpen, setMobileSavedViewsOpen] = useState(false)
 
   const activeFieldIds = FILTER_FIELDS.filter((field) => (values[field.id]?.length ?? 0) > 0).map(
     (field) => field.id
@@ -74,6 +91,14 @@ export function FilterMenu({ className }: { className?: string }) {
   }
 
   const reset = () => setValues({})
+
+  const handleMobileOpenChange = (next: boolean) => {
+    setMobileOpen(next)
+    if (!next) {
+      setMobileFieldId(null)
+      setMobileSavedViewsOpen(false)
+    }
+  }
 
   function FieldValueItems({ field }: { field: FilterField }) {
     const selected = values[field.id] ?? []
@@ -160,41 +185,236 @@ export function FilterMenu({ className }: { className?: string }) {
     )
   }
 
+  /** Root page of the mobile sheet — saved views, then every filter field. */
+  function MobileFieldList() {
+    return (
+      <>
+        <button type="button" className={MOBILE_ROW} onClick={() => setMobileSavedViewsOpen(true)}>
+          <Bookmark className="size-4 text-muted-foreground" />
+          Saved Views
+        </button>
+        <Separator className="my-1" />
+        <div className="px-2 py-2.5 text-sm text-muted-foreground">{FILTER_GROUP_LABEL}</div>
+        {FILTER_FIELDS.map((field) => {
+          const hasValues = (values[field.id]?.length ?? 0) > 0
+          return (
+            <button
+              key={field.id}
+              type="button"
+              className={MOBILE_ROW}
+              onClick={() => setMobileFieldId(field.id)}
+            >
+              {hasValues && <CircleCheck className="size-4 shrink-0 text-primary" />}
+              <span className="flex-1 truncate">{field.label}</span>
+              <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+            </button>
+          )
+        })}
+      </>
+    )
+  }
+
+  /** Drill-down page showing one field's options, with checkboxes and a "Clear". */
+  function MobileFieldValues({ fieldId }: { fieldId: string }) {
+    const field = FILTER_FIELDS.find((item) => item.id === fieldId)!
+    const selected = values[fieldId] ?? []
+
+    return (
+      <>
+        <button
+          type="button"
+          className={cn(MOBILE_ROW, "text-muted-foreground")}
+          onClick={() => setMobileFieldId(null)}
+        >
+          <ArrowLeft className="size-4" />
+          {field.label}
+        </button>
+        {selected.length > 0 && (
+          <div className="flex justify-end px-2 pb-1">
+            <button
+              type="button"
+              onClick={() => removeField(fieldId)}
+              className="cursor-pointer text-xs font-medium text-primary hover:underline"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+        {field.options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            className={MOBILE_ROW}
+            onClick={() => toggleValue(fieldId, option)}
+          >
+            <Checkbox checked={selected.includes(option)} className="pointer-events-none" />
+            <span className="truncate">{option}</span>
+          </button>
+        ))}
+      </>
+    )
+  }
+
+  /** Drill-down page listing saved views, mirroring the desktop dropdown's content. */
+  function MobileSavedViews() {
+    return (
+      <>
+        <button
+          type="button"
+          className={cn(MOBILE_ROW, "text-muted-foreground")}
+          onClick={() => setMobileSavedViewsOpen(false)}
+        >
+          <ArrowLeft className="size-4" />
+          Saved Views
+        </button>
+        {SAVED_VIEWS.map((view) => (
+          <button key={view} type="button" className={MOBILE_ROW}>
+            {view}
+          </button>
+        ))}
+        <button type="button" className={MOBILE_ROW}>
+          <Plus className="size-4 text-muted-foreground" />
+          Create view
+        </button>
+      </>
+    )
+  }
+
   return (
-    <div className={cn("flex flex-wrap items-center gap-2", className)}>
-      {activeDefaultIds.map((fieldId) => (
-        <ActivePill key={fieldId} fieldId={fieldId} />
-      ))}
+    <div className={className}>
+      <div className="hidden flex-wrap items-center gap-2 md:flex">
+        {activeDefaultIds.map((fieldId) => (
+          <ActivePill key={fieldId} fieldId={fieldId} />
+        ))}
 
-      {extraFieldIds.map((fieldId) => (
-        <ActivePill key={fieldId} fieldId={fieldId} />
-      ))}
+        {extraFieldIds.map((fieldId) => (
+          <ActivePill key={fieldId} fieldId={fieldId} />
+        ))}
 
-      {inactiveDefaultIds.map((fieldId) => (
-        <DefaultPill key={fieldId} fieldId={fieldId} />
-      ))}
+        {inactiveDefaultIds.map((fieldId) => (
+          <DefaultPill key={fieldId} fieldId={fieldId} />
+        ))}
 
-      <Separator orientation="vertical" className="mx-1 h-6 self-center!" />
+        <Separator orientation="vertical" className="mx-1 h-6 self-center!" />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger render={<Button type="button" variant="outline" />}>
-          <Bookmark data-icon="inline-start" className="size-4" />
-          Saved views
-          <ChevronDown data-icon="inline-end" className="size-4" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-56">
-          {SAVED_VIEWS.map((view) => (
-            <DropdownMenuItem key={view}>{view}</DropdownMenuItem>
-          ))}
-          <DropdownMenuItem>
-            <Plus className="size-4 text-muted-foreground" />
-            Create view
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Button type="button" variant="outline" />}>
+            <Bookmark data-icon="inline-start" className="size-4" />
+            Saved views
+            <ChevronDown data-icon="inline-end" className="size-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-56">
+            {SAVED_VIEWS.map((view) => (
+              <DropdownMenuItem key={view}>{view}</DropdownMenuItem>
+            ))}
+            <DropdownMenuItem>
+              <Plus className="size-4 text-muted-foreground" />
+              Create view
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-      <Popover>
-        <PopoverTrigger render={<Button type="button" variant="outline" />}>
+        <Popover>
+          <PopoverTrigger render={<Button type="button" variant="outline" />}>
+            <ListFilter data-icon="inline-start" className="size-4" />
+            Filters
+            {activeFieldIds.length > 0 && (
+              <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
+                {activeFieldIds.length}
+              </Badge>
+            )}
+            <ChevronDown data-icon="inline-end" className="size-4" />
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            className="flex w-auto flex-row items-stretch gap-0 overflow-hidden rounded-xl p-0"
+          >
+            {/* Field list — popover surface, rounded on the left only. */}
+            {/* h-auto overrides Command's own `size-full`, whose height:100% would
+                resolve against the auto-height popover and defeat the stretch. */}
+            {/*
+              cmdk always keeps exactly one item marked data-selected for
+              keyboard nav — even controlled to "", it self-corrects back to
+              the first item, and disablePointerSelection only stops *hover*
+              from moving that marker, not the initial one. Rather than fight
+              cmdk's model, cancel data-selected's own background (which
+              command.tsx applies by default) on these items and drive the
+              highlight purely off real CSS hover: and our own `active` state,
+              neither of which cmdk can get stuck or force.
+            */}
+            <Command className="h-auto w-[183px] self-stretch rounded-none!" loop>
+              <div className="px-2 py-2.5 text-sm text-muted-foreground">
+                {FILTER_GROUP_LABEL}
+              </div>
+              <CommandList className="max-h-none">
+                {FILTER_FIELDS.map((field) => {
+                  const active = field.id === megaMenuFieldId
+                  const hasValues = (values[field.id]?.length ?? 0) > 0
+                  return (
+                    <CommandItem
+                      key={field.id}
+                      value={field.label}
+                      onSelect={() => setMegaMenuFieldId(field.id)}
+                      className={cn(
+                        "data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground",
+                        // data-selected:bg-transparent is an attribute selector, which
+                        // out-specifies the plain .bg-muted below — force this one with
+                        // `!` so the genuinely active field always wins regardless.
+                        active && "bg-muted! text-foreground!",
+                        // CommandItem always appends its own trailing checkmark icon
+                        // (for the data-checked convention) after our children — its
+                        // ml-auto was winning the "push to the edge" over our own
+                        // chevron, leaving the chevron stranded mid-row. We don't use
+                        // that convention here, so just drop it from layout.
+                        "[&>svg:last-child]:hidden"
+                      )}
+                    >
+                      {/* command.tsx forces descendant svgs to text-foreground while
+                          cmdk's own data-selected flag is set (see filter-menu's note
+                          above on why that's always true for some item) — force this
+                          one to stay primary regardless. */}
+                      {hasValues && <CircleCheck className="size-4 shrink-0 text-primary!" />}
+                      <span className="flex-1 truncate">{field.label}</span>
+                      {active && <ChevronRight className="ml-auto size-4" />}
+                    </CommandItem>
+                  )
+                })}
+              </CommandList>
+            </Command>
+
+            {/* Values for the selected field — recessed onto the page surface. */}
+            <Command className="h-auto w-[183px] self-stretch rounded-none! bg-background" loop>
+              <CommandList className="max-h-none">
+                {megaMenuField.options.map((option) => {
+                  const checked = (values[megaMenuField.id] ?? []).includes(option)
+                  return (
+                    <CommandItem
+                      key={option}
+                      value={option}
+                      onSelect={() => toggleValue(megaMenuField.id, option)}
+                      className="data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <Checkbox checked={checked} className="pointer-events-none" />
+                      <span className="truncate">{option}</span>
+                    </CommandItem>
+                  )
+                })}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {activeFieldIds.length > 0 && (
+          <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
+            Clear all
+          </Button>
+        )}
+      </div>
+
+      {/* Below md there's no room for every pill — a single trigger opens a
+          bottom sheet with the same field list and value-picking behavior. */}
+      <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
+        <SheetTrigger render={<Button type="button" variant="outline" className="md:hidden" />}>
           <ListFilter data-icon="inline-start" className="size-4" />
           Filters
           {activeFieldIds.length > 0 && (
@@ -203,91 +423,24 @@ export function FilterMenu({ className }: { className?: string }) {
             </Badge>
           )}
           <ChevronDown data-icon="inline-end" className="size-4" />
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="flex w-auto flex-row items-stretch gap-0 overflow-hidden rounded-xl p-0"
+        </SheetTrigger>
+        <SheetContent
+          side="bottom"
+          showCloseButton={false}
+          className="max-h-[85vh] gap-0 overflow-hidden rounded-t-2xl p-0"
         >
-          {/* Field list — popover surface, rounded on the left only. */}
-          {/* h-auto overrides Command's own `size-full`, whose height:100% would
-              resolve against the auto-height popover and defeat the stretch. */}
-          {/*
-            cmdk always keeps exactly one item marked data-selected for
-            keyboard nav — even controlled to "", it self-corrects back to
-            the first item, and disablePointerSelection only stops *hover*
-            from moving that marker, not the initial one. Rather than fight
-            cmdk's model, cancel data-selected's own background (which
-            command.tsx applies by default) on these items and drive the
-            highlight purely off real CSS hover: and our own `active` state,
-            neither of which cmdk can get stuck or force.
-          */}
-          <Command className="h-auto w-[183px] self-stretch rounded-none!" loop>
-            <div className="border-b border-border px-2 py-2.5 text-sm text-muted-foreground">
-              {FILTER_GROUP_LABEL}
-            </div>
-            <CommandList className="max-h-none">
-              {FILTER_FIELDS.map((field) => {
-                const active = field.id === megaMenuFieldId
-                const hasValues = (values[field.id]?.length ?? 0) > 0
-                return (
-                  <CommandItem
-                    key={field.id}
-                    value={field.label}
-                    onSelect={() => setMegaMenuFieldId(field.id)}
-                    className={cn(
-                      "data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground",
-                      // data-selected:bg-transparent is an attribute selector, which
-                      // out-specifies the plain .bg-muted below — force this one with
-                      // `!` so the genuinely active field always wins regardless.
-                      active && "bg-muted! text-foreground!",
-                      // CommandItem always appends its own trailing checkmark icon
-                      // (for the data-checked convention) after our children — its
-                      // ml-auto was winning the "push to the edge" over our own
-                      // chevron, leaving the chevron stranded mid-row. We don't use
-                      // that convention here, so just drop it from layout.
-                      "[&>svg:last-child]:hidden"
-                    )}
-                  >
-                    {/* command.tsx forces descendant svgs to text-foreground while
-                        cmdk's own data-selected flag is set (see filter-menu's note
-                        above on why that's always true for some item) — force this
-                        one to stay primary regardless. */}
-                    {hasValues && <CircleCheck className="size-4 shrink-0 text-primary!" />}
-                    <span className="flex-1 truncate">{field.label}</span>
-                    {active && <ChevronRight className="ml-auto size-4" />}
-                  </CommandItem>
-                )
-              })}
-            </CommandList>
-          </Command>
-
-          {/* Values for the selected field — recessed onto the page surface. */}
-          <Command className="h-auto w-[183px] self-stretch rounded-none! bg-background" loop>
-            <CommandList className="max-h-none">
-              {megaMenuField.options.map((option) => {
-                const checked = (values[megaMenuField.id] ?? []).includes(option)
-                return (
-                  <CommandItem
-                    key={option}
-                    value={option}
-                    onSelect={() => toggleValue(megaMenuField.id, option)}
-                    className="data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground"
-                  >
-                    <Checkbox checked={checked} className="pointer-events-none" />
-                    <span className="truncate">{option}</span>
-                  </CommandItem>
-                )
-              })}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-
-      {activeFieldIds.length > 0 && (
-        <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
-          Clear all
-        </Button>
-      )}
+          <div className="mx-auto mt-2 mb-1 h-1 w-12 shrink-0 rounded-full bg-border" />
+          <div className="flex flex-col overflow-y-auto p-1">
+            {mobileFieldId ? (
+              <MobileFieldValues fieldId={mobileFieldId} />
+            ) : mobileSavedViewsOpen ? (
+              <MobileSavedViews />
+            ) : (
+              <MobileFieldList />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   )
 }
