@@ -125,7 +125,7 @@ export function FilterMenu({ className }: { className?: string }) {
       <Popover>
         <PopoverTrigger render={<FilterTrigger />}>
           <ListFilter className="text-muted-foreground" />
-          {activeFieldIds.length > 0 ? `Filters (${activeFieldIds.length})` : "All filters"}
+          {activeFieldIds.length > 0 ? `Filters (${activeFieldIds.length})` : "Filters"}
         </PopoverTrigger>
         <PopoverContent
           align="start"
