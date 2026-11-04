@@ -8,7 +8,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -116,9 +115,8 @@ export function FilterMenu({ className }: { className?: string }) {
           {SAVED_VIEWS.map((view) => (
             <DropdownMenuItem key={view}>{view}</DropdownMenuItem>
           ))}
-          <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Plus className="size-4" />
+            <Plus className="size-4 text-muted-foreground" />
             Create view
           </DropdownMenuItem>
         </DropdownMenuContent>
