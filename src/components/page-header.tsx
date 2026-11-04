@@ -29,7 +29,7 @@ interface PageHeaderProps {
   icon?: LucideIcon
   /** An actual logo or photo — falls back to a plain placeholder circle when omitted. */
   logoSrc?: string
-  /** "square" shows a rounded square instead of the default circle — used for portfolios. */
+  /** "circle" shows a circle instead of the default rounded square. */
   logoShape?: "circle" | "square"
   className?: string
 }
@@ -45,7 +45,7 @@ export function PageHeader({
   variant = "default",
   icon: Icon,
   logoSrc,
-  logoShape = "circle",
+  logoShape = "square",
   className,
 }: PageHeaderProps) {
   const titleLine = (
