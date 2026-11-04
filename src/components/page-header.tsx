@@ -49,9 +49,9 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   const titleLine = (
-    <h1 className="font-heading text-4xl font-bold text-foreground">
+    <h1 className="font-heading text-3xl font-semibold text-foreground">
       {title}
-      {pageName && <span className="font-normal text-muted-foreground"> | {pageName}</span>}
+      {pageName && <span className="font-light text-muted-foreground"> | {pageName}</span>}
     </h1>
   )
 
@@ -71,8 +71,8 @@ export function PageHeader({
 
   return (
     <div className={className}>
-      <div className="flex items-start gap-4">
-        <Avatar className={cn("size-20", squareLogo && "rounded-xl after:rounded-xl")}>
+      <div className="flex items-stretch gap-4">
+        <Avatar className={cn("h-auto w-20 self-stretch", squareLogo && "rounded-xl after:rounded-xl")}>
           {logoSrc && (
             <AvatarImage src={logoSrc} alt={title} className={cn(squareLogo && "rounded-xl")} />
           )}

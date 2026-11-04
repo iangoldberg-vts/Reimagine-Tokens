@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Bookmark, ChevronDown, ChevronRight, CircleCheck, ListFilter, Plus, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Command, CommandItem, CommandList } from "@/components/ui/command"
 import {
@@ -11,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 interface FilterField {
@@ -26,37 +28,20 @@ const FILTER_FIELDS: FilterField[] = [
     label: "Size Range",
     options: ["Under 5,000 sf", "5,000–10,000 sf", "10,000–25,000 sf", "25,000+ sf"],
   },
+  { id: "occupancy", label: "Occupancy", options: ["Occupied", "Partially occupied", "Vacant"] },
   { id: "retail", label: "Retail", options: ["Street retail", "Mall", "Strip center", "Mixed-use"] },
   { id: "renewal-status", label: "Renewal Status", options: ["Renewing", "Not renewing", "Undecided"] },
   { id: "space-type", label: "Space Type", options: ["Office", "Retail", "Industrial", "Flex"] },
   { id: "month-to-month", label: "Month to Month", options: ["Yes", "No"] },
 ]
 
+/** Always on screen as their own dropdown pill, even with no value selected. */
+const DEFAULT_FIELD_IDS = ["lease-status", "size-range", "occupancy"]
+
 /** Heads the field column — names the entity these filters apply to. */
 const FILTER_GROUP_LABEL = "Lease"
 
 const SAVED_VIEWS = ["Leases needing attention", "Retail leases"]
-
-/** Matches SelectTrigger's visual (rounded-lg, border-input, chevron-down) without needing a Select root. */
-function FilterTrigger({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"button">) {
-  return (
-    <button
-      type="button"
-      className={cn(
-        "flex h-8 w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none hover:bg-muted/50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      <ChevronDown className="text-muted-foreground" />
-    </button>
-  )
-}
 
 export function FilterMenu({ className }: { className?: string }) {
   const [values, setValues] = useState<Record<string, string[]>>({})
@@ -65,6 +50,9 @@ export function FilterMenu({ className }: { className?: string }) {
   const activeFieldIds = FILTER_FIELDS.filter((field) => (values[field.id]?.length ?? 0) > 0).map(
     (field) => field.id
   )
+  const activeDefaultIds = DEFAULT_FIELD_IDS.filter((fieldId) => activeFieldIds.includes(fieldId))
+  const inactiveDefaultIds = DEFAULT_FIELD_IDS.filter((fieldId) => !activeFieldIds.includes(fieldId))
+  const extraFieldIds = activeFieldIds.filter((fieldId) => !DEFAULT_FIELD_IDS.includes(fieldId))
   const megaMenuField = FILTER_FIELDS.find((field) => field.id === megaMenuFieldId)!
 
   const toggleValue = (fieldId: string, option: string) => {
@@ -104,12 +92,84 @@ export function FilterMenu({ className }: { className?: string }) {
     )
   }
 
+  /** A field with a value set — shows the value, editable via dropdown, clearable with "x". */
+  function ActivePill({ fieldId }: { fieldId: string }) {
+    const field = FILTER_FIELDS.find((item) => item.id === fieldId)!
+    const selected = values[fieldId] ?? []
+    const label = selected.length === 1 ? selected[0] : field.label
+
+    return (
+      <div className={cn(buttonVariants({ variant: "outline" }), "gap-1.5 bg-primary/10 pr-2 pl-0")}>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <button
+                type="button"
+                className="flex h-full cursor-pointer items-center gap-1.5 pl-4 outline-none"
+              />
+            }
+          >
+            {label}
+            {selected.length > 1 && (
+              <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
+                {selected.length}
+              </Badge>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <FieldValueItems field={field} />
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <button
+          type="button"
+          aria-label={`Remove ${field.label} filter`}
+          onClick={() => removeField(fieldId)}
+          className="cursor-pointer rounded-full p-0.5 hover:bg-primary/10"
+        >
+          <X className="size-3.5" />
+        </button>
+      </div>
+    )
+  }
+
+  /** A default field with no value yet — just a dropdown trigger, no "x". */
+  function DefaultPill({ fieldId }: { fieldId: string }) {
+    const field = FILTER_FIELDS.find((item) => item.id === fieldId)!
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger render={<Button type="button" variant="outline" />}>
+          {field.label}
+          <ChevronDown data-icon="inline-end" className="size-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-48">
+          <FieldValueItems field={field} />
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+  }
+
   return (
     <div className={cn("flex flex-wrap items-center gap-2", className)}>
+      {activeDefaultIds.map((fieldId) => (
+        <ActivePill key={fieldId} fieldId={fieldId} />
+      ))}
+
+      {extraFieldIds.map((fieldId) => (
+        <ActivePill key={fieldId} fieldId={fieldId} />
+      ))}
+
+      {inactiveDefaultIds.map((fieldId) => (
+        <DefaultPill key={fieldId} fieldId={fieldId} />
+      ))}
+
+      <Separator orientation="vertical" className="mx-1 h-6 self-center!" />
+
       <DropdownMenu>
-        <DropdownMenuTrigger render={<FilterTrigger />}>
-          <Bookmark className="text-muted-foreground" />
+        <DropdownMenuTrigger render={<Button type="button" variant="outline" />}>
+          <Bookmark data-icon="inline-start" className="size-4" />
           Saved views
+          <ChevronDown data-icon="inline-end" className="size-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56">
           {SAVED_VIEWS.map((view) => (
@@ -123,9 +183,15 @@ export function FilterMenu({ className }: { className?: string }) {
       </DropdownMenu>
 
       <Popover>
-        <PopoverTrigger render={<FilterTrigger />}>
-          <ListFilter className="text-muted-foreground" />
-          {activeFieldIds.length > 0 ? `Filters (${activeFieldIds.length})` : "Filters"}
+        <PopoverTrigger render={<Button type="button" variant="outline" />}>
+          <ListFilter data-icon="inline-start" className="size-4" />
+          Filters
+          {activeFieldIds.length > 0 && (
+            <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
+              {activeFieldIds.length}
+            </Badge>
+          )}
+          <ChevronDown data-icon="inline-end" className="size-4" />
         </PopoverTrigger>
         <PopoverContent
           align="start"
@@ -205,38 +271,6 @@ export function FilterMenu({ className }: { className?: string }) {
           </Command>
         </PopoverContent>
       </Popover>
-
-      {activeFieldIds.map((fieldId) => {
-        const field = FILTER_FIELDS.find((item) => item.id === fieldId)!
-        const selected = values[fieldId] ?? []
-        const label = selected.length === 1 ? selected[0] : `${field.label} (${selected.length})`
-
-        return (
-          <div
-            key={fieldId}
-            className="flex h-8 w-fit items-center gap-1.5 rounded-lg border border-input bg-transparent py-1 pr-1 pl-2.5 text-sm whitespace-nowrap"
-          >
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                render={<button type="button" className="cursor-pointer outline-none" />}
-              >
-                {label}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48">
-                <FieldValueItems field={field} />
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <button
-              type="button"
-              aria-label={`Remove ${field.label} filter`}
-              onClick={() => removeField(fieldId)}
-              className="cursor-pointer rounded-sm p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-            >
-              <X className="size-3.5" />
-            </button>
-          </div>
-        )
-      })}
 
       {activeFieldIds.length > 0 && (
         <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
