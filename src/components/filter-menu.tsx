@@ -158,7 +158,7 @@ export function FilterMenu({ className }: { className?: string }) {
                     value={field.label}
                     onSelect={() => setMegaMenuFieldId(field.id)}
                     className={cn(
-                      "data-selected:bg-transparent data-selected:text-foreground hover:bg-muted",
+                      "data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground",
                       // data-selected:bg-transparent is an attribute selector, which
                       // out-specifies the plain .bg-muted below — force this one with
                       // `!` so the genuinely active field always wins regardless.
@@ -188,7 +188,7 @@ export function FilterMenu({ className }: { className?: string }) {
                     key={option}
                     value={option}
                     onSelect={() => toggleValue(megaMenuField.id, option)}
-                    className="data-selected:bg-transparent data-selected:text-foreground hover:bg-muted"
+                    className="data-selected:bg-transparent data-selected:text-foreground hover:bg-accent hover:text-accent-foreground"
                   >
                     <Checkbox checked={checked} className="pointer-events-none" />
                     <span className="truncate">{option}</span>
