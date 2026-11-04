@@ -274,7 +274,7 @@ export function FilterMenu({ className }: { className?: string }) {
 
       {activeFieldIds.length > 0 && (
         <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
-          Reset
+          Clear all
         </Button>
       )}
     </div>
