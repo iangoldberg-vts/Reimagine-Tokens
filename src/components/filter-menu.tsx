@@ -413,34 +413,42 @@ export function FilterMenu({ className }: { className?: string }) {
 
       {/* Below md there's no room for every pill — a single trigger opens a
           bottom sheet with the same field list and value-picking behavior. */}
-      <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
-        <SheetTrigger render={<Button type="button" variant="outline" className="md:hidden" />}>
-          <ListFilter data-icon="inline-start" className="size-4" />
-          Filters
-          {activeFieldIds.length > 0 && (
-            <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
-              {activeFieldIds.length}
-            </Badge>
-          )}
-          <ChevronDown data-icon="inline-end" className="size-4" />
-        </SheetTrigger>
-        <SheetContent
-          side="bottom"
-          showCloseButton={false}
-          className="max-h-[85vh] gap-0 overflow-hidden rounded-t-2xl p-0"
-        >
-          <div className="mx-auto mt-2 mb-1 h-1 w-12 shrink-0 rounded-full bg-border" />
-          <div className="flex flex-col overflow-y-auto p-1">
-            {mobileFieldId ? (
-              <MobileFieldValues fieldId={mobileFieldId} />
-            ) : mobileSavedViewsOpen ? (
-              <MobileSavedViews />
-            ) : (
-              <MobileFieldList />
+      <div className="flex items-center gap-2 md:hidden">
+        <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
+          <SheetTrigger render={<Button type="button" variant="outline" />}>
+            <ListFilter data-icon="inline-start" className="size-4" />
+            Filters
+            {activeFieldIds.length > 0 && (
+              <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
+                {activeFieldIds.length}
+              </Badge>
             )}
-          </div>
-        </SheetContent>
-      </Sheet>
+            <ChevronDown data-icon="inline-end" className="size-4" />
+          </SheetTrigger>
+          <SheetContent
+            side="bottom"
+            showCloseButton={false}
+            className="max-h-[85vh] gap-0 overflow-hidden rounded-t-2xl p-0"
+          >
+            <div className="mx-auto mt-2 mb-1 h-1 w-12 shrink-0 rounded-full bg-border" />
+            <div className="flex flex-col overflow-y-auto p-1">
+              {mobileFieldId ? (
+                <MobileFieldValues fieldId={mobileFieldId} />
+              ) : mobileSavedViewsOpen ? (
+                <MobileSavedViews />
+              ) : (
+                <MobileFieldList />
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {activeFieldIds.length > 0 && (
+          <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
+            Clear all
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
