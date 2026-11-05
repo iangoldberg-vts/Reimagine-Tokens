@@ -195,37 +195,41 @@ export function SearchOverlay({
           "data-open:fade-in-100 data-open:zoom-in-100"
         )}
       >
-        {/* Mobile only — the same corner affordance the filters view uses. */}
-        <button
-          type="button"
-          aria-label="Close search"
-          onClick={() => handleOpenChange(false)}
-          className="absolute top-2 right-4 flex size-[30px] cursor-pointer items-center justify-center rounded-full bg-popover text-foreground shadow-sm md:hidden"
-        >
-          <X className="size-3.5" />
-        </button>
-
         {/* The field floats as a white pill on the panel at every breakpoint. */}
-        <div className="mx-4 rounded-full bg-popover p-2.5 shadow-md">
-          <InputGroup className="h-auto min-w-0 border-0 px-2 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
-            <InputGroupAddon className="pl-0">
-              <Search className="size-4" />
-            </InputGroupAddon>
-            <InputGroupInput
-              autoFocus
-              placeholder="Search for anything"
-              className="text-base font-medium"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            {hasQuery && (
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setQuery("")}>
-                  <X className="size-4" />
-                </InputGroupButton>
+        <div className="flex items-center gap-2 px-4">
+          <div className="min-w-0 flex-1 rounded-full bg-popover p-2.5 shadow-md">
+            <InputGroup className="h-auto min-w-0 border-0 px-2 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
+              <InputGroupAddon className="pl-0">
+                <Search className="size-4" />
               </InputGroupAddon>
-            )}
-          </InputGroup>
+              <InputGroupInput
+                autoFocus
+                placeholder="Search for anything"
+                className="text-base font-medium"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              {hasQuery && (
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setQuery("")}>
+                    <X className="size-4" />
+                  </InputGroupButton>
+                </InputGroupAddon>
+              )}
+            </InputGroup>
+          </div>
+
+          {/* Below md this lifts out of the row into the screen's top-right
+              corner, the way the filters takeover closes; from md up it sits
+              inline beside the field. */}
+          <button
+            type="button"
+            aria-label="Close search"
+            onClick={() => handleOpenChange(false)}
+            className="absolute top-2 right-4 flex size-[30px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-popover text-foreground shadow-sm md:static"
+          >
+            <X className="size-3.5" />
+          </button>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 px-4">
