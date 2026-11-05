@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { MobileFullPage } from "@/components/mobile-full-page"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -62,7 +63,7 @@ export function FilterMenu({ className }: { className?: string }) {
   const [megaMenuFieldId, setMegaMenuFieldId] = useState(FILTER_FIELDS[0].id)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileFieldId, setMobileFieldId] = useState<string | null>(null)
-  const [mobileSavedViewsOpen, setMobileSavedViewsOpen] = useState(false)
+  const [mobileSavedViewsSheetOpen, setMobileSavedViewsSheetOpen] = useState(false)
 
   const activeFieldIds = FILTER_FIELDS.filter((field) => (values[field.id]?.length ?? 0) > 0).map(
     (field) => field.id
@@ -94,11 +95,20 @@ export function FilterMenu({ className }: { className?: string }) {
 
   const handleMobileOpenChange = (next: boolean) => {
     setMobileOpen(next)
-    if (!next) {
-      setMobileFieldId(null)
-      setMobileSavedViewsOpen(false)
-    }
+    if (!next) setMobileFieldId(null)
   }
+
+  /**
+   * Sits beside the title in the full-screen view: inside a field it clears
+   * just that field, on the root list it clears every filter at once.
+   */
+  const mobileClearAction = mobileFieldId
+    ? (values[mobileFieldId]?.length ?? 0) > 0
+      ? { label: "Clear", onClick: () => removeField(mobileFieldId) }
+      : null
+    : activeFieldIds.length > 0
+      ? { label: "Clear all", onClick: reset }
+      : null
 
   function FieldValueItems({ field }: { field: FilterField }) {
     const selected = values[field.id] ?? []
@@ -185,15 +195,10 @@ export function FilterMenu({ className }: { className?: string }) {
     )
   }
 
-  /** Root page of the mobile sheet — saved views, then every filter field. */
+  /** Root page of the full-screen filters view — every filter field, grouped. */
   function MobileFieldList() {
     return (
       <>
-        <button type="button" className={MOBILE_ROW} onClick={() => setMobileSavedViewsOpen(true)}>
-          <Bookmark className="size-4 text-muted-foreground" />
-          Saved Views
-        </button>
-        <Separator className="my-1" />
         <div className="px-2 py-2.5 text-sm text-muted-foreground">{FILTER_GROUP_LABEL}</div>
         {FILTER_FIELDS.map((field) => {
           const hasValues = (values[field.id]?.length ?? 0) > 0
@@ -214,32 +219,13 @@ export function FilterMenu({ className }: { className?: string }) {
     )
   }
 
-  /** Drill-down page showing one field's options, with checkboxes and a "Clear". */
+  /** Drill-down page showing one field's options as checkbox rows. */
   function MobileFieldValues({ fieldId }: { fieldId: string }) {
     const field = FILTER_FIELDS.find((item) => item.id === fieldId)!
     const selected = values[fieldId] ?? []
 
     return (
       <>
-        <button
-          type="button"
-          className={cn(MOBILE_ROW, "text-muted-foreground")}
-          onClick={() => setMobileFieldId(null)}
-        >
-          <ArrowLeft className="size-4" />
-          {field.label}
-        </button>
-        {selected.length > 0 && (
-          <div className="flex justify-end px-2 pb-1">
-            <button
-              type="button"
-              onClick={() => removeField(fieldId)}
-              className="cursor-pointer text-xs font-medium text-primary hover:underline"
-            >
-              Clear
-            </button>
-          </div>
-        )}
         {field.options.map((option) => (
           <button
             key={option}
@@ -255,18 +241,10 @@ export function FilterMenu({ className }: { className?: string }) {
     )
   }
 
-  /** Drill-down page listing saved views, mirroring the desktop dropdown's content. */
-  function MobileSavedViews() {
+  /** The saved view rows shared by the drill-down page and the standalone sheet. */
+  function SavedViewsRows() {
     return (
       <>
-        <button
-          type="button"
-          className={cn(MOBILE_ROW, "text-muted-foreground")}
-          onClick={() => setMobileSavedViewsOpen(false)}
-        >
-          <ArrowLeft className="size-4" />
-          Saved Views
-        </button>
         {SAVED_VIEWS.map((view) => (
           <button key={view} type="button" className={MOBILE_ROW}>
             {view}
@@ -411,18 +389,13 @@ export function FilterMenu({ className }: { className?: string }) {
         )}
       </div>
 
-      {/* Below md there's no room for every pill — a single trigger opens a
-          bottom sheet with the same field list and value-picking behavior. */}
+      {/* Below md there's no room for every pill — Saved views collapses to a
+          bottom sheet, and Filters collapses to a full-screen takeover. */}
       <div className="flex items-center gap-2 md:hidden">
-        <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
+        <Sheet open={mobileSavedViewsSheetOpen} onOpenChange={setMobileSavedViewsSheetOpen}>
           <SheetTrigger render={<Button type="button" variant="outline" />}>
-            <ListFilter data-icon="inline-start" className="size-4" />
-            Filters
-            {activeFieldIds.length > 0 && (
-              <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
-                {activeFieldIds.length}
-              </Badge>
-            )}
+            <Bookmark data-icon="inline-start" className="size-4" />
+            Saved views
             <ChevronDown data-icon="inline-end" className="size-4" />
           </SheetTrigger>
           <SheetContent
@@ -432,16 +405,72 @@ export function FilterMenu({ className }: { className?: string }) {
           >
             <div className="mx-auto mt-2 mb-1 h-1 w-12 shrink-0 rounded-full bg-border" />
             <div className="flex flex-col overflow-y-auto p-1">
-              {mobileFieldId ? (
-                <MobileFieldValues fieldId={mobileFieldId} />
-              ) : mobileSavedViewsOpen ? (
-                <MobileSavedViews />
-              ) : (
-                <MobileFieldList />
-              )}
+              <SavedViewsRows />
             </div>
           </SheetContent>
         </Sheet>
+
+        <MobileFullPage
+          trigger={
+            <Button type="button" variant="outline">
+              <ListFilter data-icon="inline-start" className="size-4" />
+              Filters
+              {activeFieldIds.length > 0 && (
+                <Badge className="size-4 justify-center rounded-full p-0 text-[10px] leading-none">
+                  {activeFieldIds.length}
+                </Badge>
+              )}
+              <ChevronDown data-icon="inline-end" className="size-4" />
+            </Button>
+          }
+          open={mobileOpen}
+          onOpenChange={handleMobileOpenChange}
+          className="bg-background"
+        >
+          {/* The close affordance sits in its own corner above the title row,
+              so it stays put as the title swaps between the two pages. */}
+          <button
+            type="button"
+            aria-label="Close filters"
+            onClick={() => handleMobileOpenChange(false)}
+            className="absolute top-2 right-4 flex size-[30px] cursor-pointer items-center justify-center rounded-full bg-popover text-foreground shadow-sm"
+          >
+            <X className="size-3.5" />
+          </button>
+
+          {/* pt-[42px] puts the title's own text at 42px from the top, where it
+              sits in both the list and the drilled-in field. */}
+          <div className="flex shrink-0 items-center gap-2 px-4 pt-[42px] pb-2">
+            {mobileFieldId && (
+              <button
+                type="button"
+                aria-label="Back to filters"
+                onClick={() => setMobileFieldId(null)}
+                className="cursor-pointer text-foreground"
+              >
+                <ArrowLeft className="size-4" />
+              </button>
+            )}
+            <h2 className="flex-1 truncate text-base leading-6 font-semibold text-foreground">
+              {mobileFieldId ? FILTER_FIELDS.find((field) => field.id === mobileFieldId)!.label : "Filters"}
+            </h2>
+            {mobileClearAction && (
+              <button
+                type="button"
+                onClick={mobileClearAction.onClick}
+                className="shrink-0 cursor-pointer text-sm font-medium text-primary hover:underline"
+              >
+                {mobileClearAction.label}
+              </button>
+            )}
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+            <div className="flex flex-col gap-0.5 rounded-lg bg-popover p-2.5 shadow-md">
+              {mobileFieldId ? <MobileFieldValues fieldId={mobileFieldId} /> : <MobileFieldList />}
+            </div>
+          </div>
+        </MobileFullPage>
 
         {activeFieldIds.length > 0 && (
           <Button type="button" variant="link" size="sm" className="h-8" onClick={reset}>
