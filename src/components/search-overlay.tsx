@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
-import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 type Category = "Assets" | "Deals" | "Tenants" | "Brokers"
@@ -181,7 +180,11 @@ export function SearchOverlay({
       <DialogContent
         showCloseButton={false}
         className={cn(
-          "top-0 left-0 flex h-full max-h-none w-full max-w-none translate-x-0 translate-y-0 flex-col gap-4 rounded-none border-0 p-0 py-4 ring-0 md:top-36 md:left-1/2 md:h-auto md:max-h-[32rem] md:w-[437px] md:max-w-[437px] md:-translate-x-1/2 md:rounded-xl md:border md:border-border md:shadow-md",
+          // Both breakpoints share the same surface — a page-background panel
+          // holding a floating white pill. Below md it's a full-screen
+          // takeover with a corner close chip; from md up it's a centered,
+          // bordered card.
+          "top-0 left-0 flex h-full max-h-none w-full max-w-none translate-x-0 translate-y-0 flex-col gap-4 rounded-none border-0 bg-background p-0 pt-[46px] pb-4 ring-0 md:top-36 md:left-1/2 md:h-auto md:max-h-[32rem] md:w-[448px] md:max-w-[448px] md:-translate-x-1/2 md:rounded-xl md:border md:border-border md:pt-4 md:shadow-md",
           // The entrance transition's data-starting-style attribute doesn't
           // always clear, leaving the dialog stuck invisible — neutralize
           // only the *entrance* so it renders at rest regardless. The exit
@@ -192,8 +195,19 @@ export function SearchOverlay({
           "data-open:fade-in-100 data-open:zoom-in-100"
         )}
       >
-        <div className="flex items-center gap-1">
-          <InputGroup className="h-auto min-w-0 flex-1 border-0 px-4 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
+        {/* Mobile only — the same corner affordance the filters view uses. */}
+        <button
+          type="button"
+          aria-label="Close search"
+          onClick={() => handleOpenChange(false)}
+          className="absolute top-2 right-4 flex size-[30px] cursor-pointer items-center justify-center rounded-full bg-popover text-foreground shadow-sm md:hidden"
+        >
+          <X className="size-3.5" />
+        </button>
+
+        {/* The field floats as a white pill on the panel at every breakpoint. */}
+        <div className="mx-4 rounded-full bg-popover p-2.5 shadow-md">
+          <InputGroup className="h-auto min-w-0 border-0 px-2 ring-0 has-[[data-slot=input-group-control]:focus-visible]:border-0 has-[[data-slot=input-group-control]:focus-visible]:ring-0">
             <InputGroupAddon className="pl-0">
               <Search className="size-4" />
             </InputGroupAddon>
@@ -212,18 +226,7 @@ export function SearchOverlay({
               </InputGroupAddon>
             )}
           </InputGroup>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Close search"
-            onClick={() => handleOpenChange(false)}
-            className="mr-2 shrink-0 md:hidden"
-          >
-            <X className="size-4" />
-          </Button>
         </div>
-
-        <Separator />
 
         <div className="flex flex-wrap items-center gap-2 px-4">
           {FILTERS.map((item) => (
